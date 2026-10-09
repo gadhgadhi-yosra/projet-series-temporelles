@@ -1,0 +1,197 @@
+{
+  "ARIMA_110": {
+    "order": [
+      1,
+      1,
+      0
+    ],
+    "seasonal_order": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "ARIMA_011": {
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_011_011": {
+    "order": [
+      0,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_110_011": {
+    "order": [
+      1,
+      1,
+      0
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_111_011": {
+    "order": [
+      1,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_110_101": {
+    "order": [
+      1,
+      1,
+      0
+    ],
+    "seasonal_order": [
+      1,
+      0,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_100_101": {
+    "order": [
+      1,
+      0,
+      0
+    ],
+    "seasonal_order": [
+      1,
+      0,
+      1,
+      7
+    ],
+    "trend": "c",
+    "converge": true
+  },
+  "auto_ARIMA": {
+    "order": [
+      2,
+      1,
+      2
+    ],
+    "seasonal_order": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "trend": null,
+    "converge": true
+  },
+  "auto_SARIMA": {
+    "order": [
+      2,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      1,
+      0,
+      0,
+      7
+    ],
+    "trend": null,
+    "converge": true
+  },
+  "SARIMA_211_011": {
+    "order": [
+      2,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_212_011": {
+    "order": [
+      2,
+      1,
+      2
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_311_011": {
+    "order": [
+      3,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      0,
+      1,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  },
+  "SARIMA_110_111": {
+    "order": [
+      1,
+      1,
+      0
+    ],
+    "seasonal_order": [
+      1,
+      1,
+      1,
+      7
+    ],
+    "trend": "n",
+    "converge": true
+  }
+}

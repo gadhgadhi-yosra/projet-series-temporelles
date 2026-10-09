@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-09",
+  "producteur": "Assistant Codex de cette conversation",
+  "procedure": "Restitutions rédigées par le même assistant à partir des prompts archivés et du contexte de la conversation ; aucun appel externe indépendant.",
+  "controle": "Audit par le même assistant, non indépendant ; relecture personnelle requise.",
+  "analyse_humaine_pre_llm": "Absente, confirmé par l’étudiante.",
+  "empreintes_sha256": {
+    "01_prompt_vulgarisation.txt": "bca25ee2dcf3e78b227ddd411ce603b6ade7b75e835a61752b590bbe4336dc59",
+    "01_reponse_integrale.md": "aedc4fefc44b49490a8e4a4ff41b012fcf87f776632d86c622e8994a63fbbea4",
+    "02_prompt_recommandations.txt": "6861d8f28f27edf1dddc804f1e672aee59e2fea63460d8fa6191e9694958317b",
+    "02_reponse_integrale.md": "eda2ee5f4b55f66ceea43941031ae32186be8fe848b2fc787e776eda9a7376ea",
+    "README.md": "9932d1f3a5933233f76948996d108b0cdfecc414bdfd5fc8659fde592ec64908",
+    "audit_affirmations.csv": "4f6f40a35de47a707bc9b7d8d6927e90420f9f2068e7eec1089124bdf8f38d28",
+    "contexte_resultats.json": "9da4784eccb1d359e348cd6355f6ad52cbcf94071ba24c23a592191bc417dd7d"
+  }
+}

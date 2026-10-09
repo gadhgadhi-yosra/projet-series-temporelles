@@ -1,4 +1,5 @@
 import os
+import sys
 import tempfile
 os.environ['MPLBACKEND']='Agg'
 os.environ.setdefault('MPLCONFIGDIR', os.path.join(tempfile.gettempdir(), 'wattif-matplotlib'))
@@ -6,6 +7,7 @@ import json,traceback,io,contextlib
 from pathlib import Path
 import matplotlib.pyplot as plt
 os.chdir(Path(__file__).resolve().parent.parent)
+sys.path.insert(0, str(Path.cwd()))
 p=Path('arima_sarima.ipynb'); n=json.loads(p.read_text()); env={}
 def display(value): print(value.to_string() if hasattr(value,'to_string') else str(value))
 env['display']=display

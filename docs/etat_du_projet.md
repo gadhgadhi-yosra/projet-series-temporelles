@@ -1,24 +1,22 @@
-# État du projet après intégration
+# État des tâches — 9 octobre 2026
 
-## Réalisé
+| Tâche | État et livrable |
+|---|---|
+| Analyser ACF/PACF | Réalisé, avec prudence sur la différenciation ; notebook et section 3.1 |
+| Construire ARIMA/SARIMA | Réalisé : 11 candidats manuels, dont 4 ajoutés après diagnostics |
+| Comparer avec auto_arima | Réalisé : auto_ARIMA et auto_SARIMA sur la même validation interne |
+| Ljung–Box, Jarque–Bera, ARCH-LM | Réalisé sur les candidats et le modèle retenu ; limites résiduelles conservées |
+| Sélection et test externe | Réalisé : choix figé avant test, comparaison aux deux références naïves |
+| Prévisions 7 jours avec intervalles | Réalisé : 1er–7 septembre 2026, intervalles nominaux à 95 % |
+| Export pour Anas | Réalisé : dossier et ZIP `livraison_anas`, sans envoi |
+| Analyse personnelle avant LLM | Non satisfaite : absence confirmée par l'étudiante ; impossible à reconstituer rétroactivement |
+| Prompts et réponses LLM intégrales | Réalisé dans `rapport/annexe_llm`, même assistant et même session, sans faux appel externe |
+| Vulgarisation, recommandations et limites | Réalisé, sections du rapport et annexe |
+| Comparaison personnelle / LLM | La comparaison humaine préalable n'est pas disponible ; contrôle factuel données/LLM fourni et limite déclarée |
+| Audit des hallucinations | Réalisé sur les affirmations archivées ; aucune hallucination factuelle repérée dans celles vérifiées, audit non indépendant |
+| Sections 3.1 et 5 | Rédigées avec assistance IA, à relire et à intégrer au rapport de groupe |
+| Réflexion personnelle postérieure | À rédiger par l'étudiante, dans le support prévu |
 
-- Extraction des quatre notebooks, du CSV préparé et des figures de Fayfa, sans modification de leur contenu.
-- Exclusion des checkpoints Jupyter et de la base locale Anaconda (fichiers techniques inutiles au projet).
-- Configuration du chemin, des colonnes, de l'unité et de la période hebdomadaire dans le notebook ARIMA.
-- Sauvegarde du notebook antérieur et empreintes SHA-256 des fichiers importés.
+Le modèle retenu est SARIMA(2,1,1)(0,1,1)[7]. La finalisation du livrable ne signifie pas que toutes les hypothèses du modèle sont vérifiées. Le rapport conserve les diagnostics défavorables et les limites de validation.
 
-## À terminer pour la partie prévision
-
-1. Découpage harmonisé : 90/10 externe, avec 56 jours de validation interne (8 semaines). Estimation initiale sur 3 450 jours, actualisation hebdomadaire sans réestimation. Le test externe reste à évaluer après sélection.
-2. Comparer les ordres de différenciation : ADF/KPSS sur la série brute ne rejettent pas la stationnarité au seuil de 5 % selon les sorties fournies ; les recommandations automatiques divergent. d=1 et D=1 sont des candidats, pas des obligations démontrées.
-3. Ajuster ARIMA/SARIMA et auto_arima, comparer aux méthodes naïves et vérifier convergence et résidus.
-4. Réajuster le modèle retenu et exporter les 7 jours suivant la dernière observation (1er au 7 septembre 2026), sans les confondre avec une prévision à partir de la date actuelle.
-5. Rédiger l'interprétation personnelle puis conserver prompts, réponses intégrales et analyse critique du LLM.
-
-## Limites de cette intégration
-
-Sept modèles manuels et deux modèles automatiques ont été exécutés, avec validation interne et diagnostics. Les résultats de Fayfa restent conservés dans ses notebooks. Les sources brutes ne sont pas incluses. Les dépendances de la comparaison ARIMA sont installées ; leurs versions sont enregistrées dans requirements-lock.txt. Un SARIMA de période 7 ne représente pas explicitement le cycle annuel décrit dans l'EDA.
-
-## Dernière exécution
-
-Comparaison interne terminée et notebook validé. 616 prévisions (11 méthodes × 56 jours) vérifiées, toutes antérieures au test externe. Aucun échec de convergence des modèles retenus. Des avertissements existent pendant la recherche automatique ; les sorties les conservent. Tous les modèles ont des diagnostics résiduels défavorables. La sélection finale, le test externe et les prévisions finales ne sont pas encore réalisés. Voir `resultats_premiere_comparaison.md`.
+Les quatre notebooks de Fayfa, ses figures et son CSV sont préservés (empreintes dans `import_fayfa.json`). Les documents de première comparaison décrivent une étape historique, avant les quatre candidats complémentaires.

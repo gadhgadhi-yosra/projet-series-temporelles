@@ -1,0 +1,15 @@
+Pour la présentation du projet, il est justifié de retenir SARIMA(2,1,1)(0,1,1)[7] comme modèle sélectionné par le protocole annoncé, tout en expliquant que ses hypothèses résiduelles ne sont pas toutes satisfaites. Le choix des ordres a précédé le test externe ; il faut conserver ce choix dans le bilan, sans le remplacer après avoir vu les erreurs du test.
+
+Les actions immédiatement justifiées sont les suivantes :
+
+1. Présenter ensemble l'erreur de validation et l'erreur de test, ainsi que les deux références naïves. La RMSE de test de 82,38 GWh/jour et le gain de 27,69 % par rapport au naïf saisonnier concernent la période testée ; ils ne prouvent pas une performance universelle.
+2. Remettre à Anas le CSV des sept prévisions, les bornes, les unités et les métadonnées. Préciser que les dates sont le 1er–7 septembre 2026 et que les valeurs réelles correspondantes ne sont pas présentes dans le fichier utilisé.
+3. Montrer la couverture empirique de 94,36 % et la largeur moyenne des intervalles de 346,75 GWh/jour, en rappelant les diagnostics défavorables. Une bonne couverture peut coexister avec des intervalles larges et ne suffit pas à juger leur utilité.
+4. Expliquer les résultats Ljung–Box, Jarque–Bera et ARCH-LM. Ne pas supprimer les tests défavorables du rapport et ne pas confondre « modèle sélectionné » avec « résidus conformes à toutes les hypothèses ».
+5. Conserver le code, les versions des bibliothèques, les sorties et les règles de découpage afin de pouvoir reproduire la comparaison.
+
+Plusieurs améliorations peuvent être proposées, mais elles n'ont pas été évaluées ici. Une validation couvrant plusieurs saisons aiderait à examiner la stabilité du classement. Des variables calendaires et des termes annuels pourraient représenter des effets que la période sept ne décrit pas explicitement. La température pourrait être étudiée, à condition de distinguer les observations connues à la date de prévision des prévisions météorologiques réellement disponibles pour les jours futurs. Des intervalles tenant mieux compte d'une variance variable ou des erreurs empiriques pourraient également être comparés sur une nouvelle validation. Ces propositions sont des pistes de recherche, pas des gains déjà démontrés.
+
+Les résultats ne permettent pas d'affirmer que le modèle est causal, que le cycle annuel est entièrement traité, que la couverture future sera exactement de 95 %, que chaque erreur sera inférieure à la MAE, ou que le meilleur AIC garantit la meilleure prévision. Ils ne permettent pas non plus de décider d'une quantité d'électricité à acheter ou produire dans une exploitation réelle : le projet ne fournit ni modèle économique de décision, ni contraintes opérationnelles, ni évaluation des coûts d'erreur.
+
+Le rapport doit enfin déclarer le rôle de l'IA. L'analyse personnelle préalable n'existe pas dans les éléments fournis. Il faut donc présenter la comparaison comme un contrôle de la vulgarisation par les sorties statistiques, et non comme une confrontation avec un avis humain rédigé avant l'utilisation d'un LLM. Une réflexion personnelle postérieure reste possible, mais doit être datée et nommée comme telle.

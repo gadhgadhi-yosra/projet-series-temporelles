@@ -239,7 +239,8 @@ def finaliser(y, train, validation, development, test, fits, specs, comparison):
                     test_metriques={k: float(v) for k, v in test_scores.loc[selected].items()},
                     recalage='États actualisés chaque semaine ; paramètres fixes pendant le test ; réestimation finale sur toutes les données.')
     (OUT / 'metadonnees_previsions.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2, allow_nan=False))
-    ax = y.iloc[-90:].plot(figsize=(12, 4), label='Observations', color='#29465b')
+    fig, ax = plt.subplots(figsize=(12, 4))
+    ax.plot(y.index[-90:], y.iloc[-90:].to_numpy(), label='Observations', color='#29465b')
     ax.plot(export.date, export.prevision, marker='o', label='Prévision', color='#dc6d32')
     ax.fill_between(export.date, export.borne_inferieure_95, export.borne_superieure_95,
                     alpha=.2, color='#dc6d32', label='Intervalle nominal à 95 %')

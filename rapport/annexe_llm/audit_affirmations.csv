@@ -1,0 +1,10 @@
+reponse,affirmation_exacte,preuve,controle,verdict
+01,"Le modèle retenu est SARIMA(2,1,1)(0,1,1)[7].",exports/selection_avant_test.json,"order=[2,1,1], seasonal_order=[0,1,1,7]",Conforme
+01,"Sur ce test, la MAE vaut 53,12 GWh/jour",exports/scores_test.csv,53.115953156476536,"Conforme, arrondi"
+01,"La RMSE vaut 82,38 GWh/jour",exports/scores_test.csv,82.38213297317881,"Conforme, arrondi"
+01,"La diminution relative de RMSE est donc d'environ 27,69 % sur ce test.",exports/scores_test.csv,100*(1-82.38213297317881/113.92731669503486)=27.68886746125816,Conforme ; ne pas confondre avec économie énergétique
+01,"94,36 % des observations se trouvent dans les intervalles calculés",exports/predictions_test.csv,368 observations couvertes / 390,"Conforme, arrondi ; constat historique"
+01,"La prévision est plus basse les 5 et 6 septembre, puis remonte le 7.",exports/previsions_7j.csv,977.913 ; 938.227 ; 1056.452,"Conforme ; variation prédite, pas observée"
+01,Ljung–Box rejette l'absence d'autocorrélation des résidus aux retards examinés.,exports/diagnostics_modele_retenu.csv,"p-values finales aux retards 7,14,28 < 0.05",Conforme
+02,"Ces propositions sont des pistes de recherche, pas des gains déjà démontrés.",rapport/annexe_llm/02_reponse_integrale.md,Aucun calcul de modèle météo/calendrier dans cette partie,Conforme : portée limitée
+02,L'analyse personnelle préalable n'existe pas dans les éléments fournis.,Conversation utilisateur du 9 octobre 2026,"Réponse : Non, je n’en ai pas encore rédigé.",Conforme ; condition initiale non satisfaite

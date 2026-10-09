@@ -1,0 +1,170 @@
+À partir du contexte factuel et de la réponse précédente reproduits ci-dessous, propose des recommandations prudentes pour ce projet universitaire de prévision électrique à sept jours. Sépare les actions immédiatement justifiées des pistes non testées. Indique les limites et les affirmations qu'il serait incorrect de tirer des résultats. Ne recommande pas de décision d'exploitation réelle sur ces seules prévisions. N'invente pas d'analyse personnelle antérieure ni de chiffres supplémentaires.
+
+CONTEXTE FACTUEL
+{
+  "date_redaction": "2026-10-09",
+  "modele": "SARIMA(2, 1, 1)(0, 1, 1)[7]",
+  "identifiant": "SARIMA_211_011",
+  "validation": {
+    "dates": "2025-06-12 au 2025-08-06",
+    "n": 56,
+    "MAE": 32.60386938727827,
+    "RMSE": 42.674895986684,
+    "limite": "été uniquement, EDA et validation réutilisées pendant développement"
+  },
+  "test": {
+    "dates": "2025-08-07 au 2026-08-31",
+    "n": 390,
+    "protocole": "55 blocs de 7 jours puis 5 jours ; paramètres fixes, états actualisés",
+    "scores": [
+      {
+        "modele": "SARIMA_211_011",
+        "n": 390,
+        "MAE": 53.115953156476536,
+        "RMSE": 82.38213297317881,
+        "biais_prevision": 1.245952018191291,
+        "couverture_95": 0.9435897435897436,
+        "largeur_moyenne_95": 346.74894406314945
+      },
+      {
+        "modele": "naif_saisonnier",
+        "n": 390,
+        "MAE": 76.66003846153845,
+        "RMSE": 113.92731669503486,
+        "biais_prevision": -1.0597410256410256,
+        "couverture_95": null,
+        "largeur_moyenne_95": null
+      },
+      {
+        "modele": "naif_derniere_valeur",
+        "n": 390,
+        "MAE": 76.62520256410255,
+        "RMSE": 109.13105832846,
+        "biais_prevision": 42.3192487179487,
+        "couverture_95": null,
+        "largeur_moyenne_95": null
+      }
+    ],
+    "gain_RMSE_naif_saisonnier_pct": 27.68886746125816
+  },
+  "diagnostics_finaux": [
+    {
+      "modele": "SARIMA_211_011",
+      "etape": "reajustement_final",
+      "n_residus": 3888,
+      "observations_initiales_exclues": 8,
+      "model_df": 4,
+      "retard_LB": 7,
+      "lb_stat": 46.24932958057434,
+      "lb_pvalue": 5.019744042305395e-10,
+      "JB": 3266.3099500944427,
+      "JB_p": 0.0,
+      "asymetrie": -0.0095208962923195,
+      "kurtosis": 7.490216532583209,
+      "ARCH_LM": 345.46234876281454,
+      "ARCH_p": 1.1533186729152155e-70,
+      "ARCH_retards": 7
+    },
+    {
+      "modele": "SARIMA_211_011",
+      "etape": "reajustement_final",
+      "n_residus": 3888,
+      "observations_initiales_exclues": 8,
+      "model_df": 4,
+      "retard_LB": 14,
+      "lb_stat": 72.80367538671496,
+      "lb_pvalue": 1.2710719408495483e-11,
+      "JB": 3266.3099500944427,
+      "JB_p": 0.0,
+      "asymetrie": -0.0095208962923195,
+      "kurtosis": 7.490216532583209,
+      "ARCH_LM": 345.46234876281454,
+      "ARCH_p": 1.1533186729152155e-70,
+      "ARCH_retards": 7
+    },
+    {
+      "modele": "SARIMA_211_011",
+      "etape": "reajustement_final",
+      "n_residus": 3888,
+      "observations_initiales_exclues": 8,
+      "model_df": 4,
+      "retard_LB": 28,
+      "lb_stat": 112.02506813795954,
+      "lb_pvalue": 2.4932536762537693e-13,
+      "JB": 3266.3099500944427,
+      "JB_p": 0.0,
+      "asymetrie": -0.0095208962923195,
+      "kurtosis": 7.490216532583209,
+      "ARCH_LM": 345.46234876281454,
+      "ARCH_p": 1.1533186729152155e-70,
+      "ARCH_retards": 7
+    }
+  ],
+  "previsions": [
+    {
+      "date": "2026-09-01",
+      "prevision": 1086.5410252930933,
+      "borne_inferieure_95": 1002.3248840344066,
+      "borne_superieure_95": 1170.7571665517798
+    },
+    {
+      "date": "2026-09-02",
+      "prevision": 1090.5976597527915,
+      "borne_inferieure_95": 960.4696407528802,
+      "borne_superieure_95": 1220.7256787527028
+    },
+    {
+      "date": "2026-09-03",
+      "prevision": 1085.8408633527422,
+      "borne_inferieure_95": 924.2679863977525,
+      "borne_superieure_95": 1247.4137403077318
+    },
+    {
+      "date": "2026-09-04",
+      "prevision": 1074.4044807036942,
+      "borne_inferieure_95": 890.0850101476586,
+      "borne_superieure_95": 1258.7239512597298
+    },
+    {
+      "date": "2026-09-05",
+      "prevision": 977.9131609147082,
+      "borne_inferieure_95": 776.180902646086,
+      "borne_superieure_95": 1179.6454191833304
+    },
+    {
+      "date": "2026-09-06",
+      "prevision": 938.2269973400396,
+      "borne_inferieure_95": 722.4784696033432,
+      "borne_superieure_95": 1153.9755250767355
+    },
+    {
+      "date": "2026-09-07",
+      "prevision": 1056.4521721686122,
+      "borne_inferieure_95": 828.940249059188,
+      "borne_superieure_95": 1283.9640952780364
+    }
+  ],
+  "unite": "GWh/jour",
+  "niveau_intervalle_nominal": 0.95,
+  "provenance": "calculs Python de ce projet ; ne pas inventer de données",
+  "analyse_personnelle_pre_llm": "absente, confirmé par l’étudiante ; aide IA déjà fournie"
+}
+
+RÉPONSE PRÉCÉDENTE INTÉGRALE
+Le modèle retenu est SARIMA(2,1,1)(0,1,1)[7]. Il prévoit la consommation électrique quotidienne à partir de son historique, avec une structure hebdomadaire. Sur la série après différenciation, il utilise deux termes autorégressifs et un terme lié aux erreurs passées ; il applique aussi une différence saisonnière de sept jours et un terme MA saisonnier. Le zéro saisonnier signifie qu'il n'y a pas de terme AR saisonnier dans cette spécification. Ces nombres décrivent le modèle choisi ; ils ne prouvent pas qu'il soit le meilleur modèle possible.
+
+Le choix s'est fait sur huit semaines de validation interne, du 12 juin au 6 août 2025. Le modèle retenu y obtient une RMSE de 42,67 GWh/jour. `auto_SARIMA` obtient 48,10 GWh/jour sur cette même validation. Le modèle manuel retenu fait donc mieux selon cette mesure, dans cette comparaison. La recherche automatique optimise un critère d'information sur l'estimation : elle ne garantit pas la plus petite erreur sur les semaines suivantes. Les différences entre plusieurs candidats manuels restent petites ; aucun test fourni ne démontre une supériorité statistiquement significative entre eux.
+
+Une fois les ordres fixés, le modèle a été évalué sur 390 jours distincts, du 7 août 2025 au 31 août 2026. Il prévoit successivement des blocs de sept jours, puis un dernier bloc de cinq jours. Les paramètres restent fixes pendant cette évaluation ; les observations connues servent à actualiser l'état du modèle avant la prévision suivante. Ce n'est donc pas une unique prévision de 390 jours faite au début du test.
+
+Sur ce test, la MAE vaut 53,12 GWh/jour : c'est la moyenne de la taille des erreurs, sans tenir compte de leur signe. La RMSE vaut 82,38 GWh/jour ; elle donne plus de poids aux grandes erreurs. Répéter simplement la semaine précédente donne une RMSE de 113,93 GWh/jour. La diminution relative de RMSE est donc d'environ 27,69 % sur ce test. Ce résultat ne signifie ni « 27,69 % de précision en plus » dans tous les contextes, ni une économie d'électricité de 27,69 %. La MAE plus faible en validation qu'en test rappelle que les performances varient selon la période.
+
+Les diagnostics montrent cependant des limites. Ljung–Box rejette l'absence d'autocorrélation des résidus aux retards examinés. Jarque–Bera rejette la normalité, et ARCH-LM détecte un effet ARCH. Le modèle laisse donc de l'information temporelle inexpliquée et sa variance d'erreur n'est pas bien décrite par une hypothèse constante. Une p-value affichée à zéro pour Jarque–Bera est une limite numérique ; il ne faut pas lui attribuer une signification de probabilité exactement nulle. Un modèle peut améliorer les prévisions par rapport à une référence tout en ayant ces défauts.
+
+Les intervalles sont annoncés à un niveau nominal de 95 %. Sur le test, 94,36 % des observations se trouvent dans les intervalles calculés, dont la largeur moyenne est de 346,75 GWh/jour. Cette couverture agrégée proche de 95 % est un constat historique, pas une garantie pour chaque jour futur, chaque saison ou chaque horizon. Elle ne fait pas disparaître les résultats défavorables des diagnostics.
+
+Les sept prévisions finales concernent le 1er au 7 septembre 2026, car la dernière observation disponible est celle du 31 août 2026. Pour le 1er septembre, la prévision est de 1 086,54 GWh/jour, avec un intervalle de 1 002,32 à 1 170,76. Pour le 7 septembre, elle est de 1 056,45 GWh/jour, avec un intervalle de 828,94 à 1 283,96. La prévision est plus basse les 5 et 6 septembre, puis remonte le 7. Le modèle reproduit un rythme hebdomadaire ; ce constat ne démontre pas la cause économique de cette variation et ne confirme pas ce qui s'est réellement passé en septembre.
+
+La validation interne couvre seulement une période estivale et a été réutilisée pendant le développement. Le test apporte une évaluation distincte, mais reste une seule période historique. Enfin, ce modèle univarié n'intègre pas explicitement la température future, les jours fériés ni une composante annuelle séparée.
+
+Cette explication est une restitution assistée par IA. L'étudiante a confirmé qu'elle n'avait pas rédigé d'analyse personnelle avant l'assistance déjà fournie : cette condition ne peut pas être satisfaite rétroactivement. Elle peut maintenant écrire sa propre réflexion, en indiquant qu'elle intervient après cette aide.

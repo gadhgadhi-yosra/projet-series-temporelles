@@ -1,0 +1,169 @@
+Explique en français accessible les résultats ci-dessous à une étudiante qui devra présenter son projet. Distingue les résultats calculés des hypothèses. Explique les paramètres SARIMA, MAE/RMSE, les diagnostics et la couverture des intervalles. N'invente ni chiffre, ni causalité, ni garantie. Mentionne la période réelle des prévisions. Signale l'absence d'analyse personnelle antérieure et ne rédige pas à sa place un témoignage à la première personne. La comparaison avec auto_arima est dans le tableau fourni.
+
+DONNÉES FOURNIES
+{
+  "date_redaction": "2026-10-09",
+  "modele": "SARIMA(2, 1, 1)(0, 1, 1)[7]",
+  "identifiant": "SARIMA_211_011",
+  "validation": {
+    "dates": "2025-06-12 au 2025-08-06",
+    "n": 56,
+    "MAE": 32.60386938727827,
+    "RMSE": 42.674895986684,
+    "limite": "été uniquement, EDA et validation réutilisées pendant développement"
+  },
+  "test": {
+    "dates": "2025-08-07 au 2026-08-31",
+    "n": 390,
+    "protocole": "55 blocs de 7 jours puis 5 jours ; paramètres fixes, états actualisés",
+    "scores": [
+      {
+        "modele": "SARIMA_211_011",
+        "n": 390,
+        "MAE": 53.115953156476536,
+        "RMSE": 82.38213297317881,
+        "biais_prevision": 1.245952018191291,
+        "couverture_95": 0.9435897435897436,
+        "largeur_moyenne_95": 346.74894406314945
+      },
+      {
+        "modele": "naif_saisonnier",
+        "n": 390,
+        "MAE": 76.66003846153845,
+        "RMSE": 113.92731669503486,
+        "biais_prevision": -1.0597410256410256,
+        "couverture_95": null,
+        "largeur_moyenne_95": null
+      },
+      {
+        "modele": "naif_derniere_valeur",
+        "n": 390,
+        "MAE": 76.62520256410255,
+        "RMSE": 109.13105832846,
+        "biais_prevision": 42.3192487179487,
+        "couverture_95": null,
+        "largeur_moyenne_95": null
+      }
+    ],
+    "gain_RMSE_naif_saisonnier_pct": 27.68886746125816
+  },
+  "diagnostics_finaux": [
+    {
+      "modele": "SARIMA_211_011",
+      "etape": "reajustement_final",
+      "n_residus": 3888,
+      "observations_initiales_exclues": 8,
+      "model_df": 4,
+      "retard_LB": 7,
+      "lb_stat": 46.24932958057434,
+      "lb_pvalue": 5.019744042305395e-10,
+      "JB": 3266.3099500944427,
+      "JB_p": 0.0,
+      "asymetrie": -0.0095208962923195,
+      "kurtosis": 7.490216532583209,
+      "ARCH_LM": 345.46234876281454,
+      "ARCH_p": 1.1533186729152155e-70,
+      "ARCH_retards": 7
+    },
+    {
+      "modele": "SARIMA_211_011",
+      "etape": "reajustement_final",
+      "n_residus": 3888,
+      "observations_initiales_exclues": 8,
+      "model_df": 4,
+      "retard_LB": 14,
+      "lb_stat": 72.80367538671496,
+      "lb_pvalue": 1.2710719408495483e-11,
+      "JB": 3266.3099500944427,
+      "JB_p": 0.0,
+      "asymetrie": -0.0095208962923195,
+      "kurtosis": 7.490216532583209,
+      "ARCH_LM": 345.46234876281454,
+      "ARCH_p": 1.1533186729152155e-70,
+      "ARCH_retards": 7
+    },
+    {
+      "modele": "SARIMA_211_011",
+      "etape": "reajustement_final",
+      "n_residus": 3888,
+      "observations_initiales_exclues": 8,
+      "model_df": 4,
+      "retard_LB": 28,
+      "lb_stat": 112.02506813795954,
+      "lb_pvalue": 2.4932536762537693e-13,
+      "JB": 3266.3099500944427,
+      "JB_p": 0.0,
+      "asymetrie": -0.0095208962923195,
+      "kurtosis": 7.490216532583209,
+      "ARCH_LM": 345.46234876281454,
+      "ARCH_p": 1.1533186729152155e-70,
+      "ARCH_retards": 7
+    }
+  ],
+  "previsions": [
+    {
+      "date": "2026-09-01",
+      "prevision": 1086.5410252930933,
+      "borne_inferieure_95": 1002.3248840344066,
+      "borne_superieure_95": 1170.7571665517798
+    },
+    {
+      "date": "2026-09-02",
+      "prevision": 1090.5976597527915,
+      "borne_inferieure_95": 960.4696407528802,
+      "borne_superieure_95": 1220.7256787527028
+    },
+    {
+      "date": "2026-09-03",
+      "prevision": 1085.8408633527422,
+      "borne_inferieure_95": 924.2679863977525,
+      "borne_superieure_95": 1247.4137403077318
+    },
+    {
+      "date": "2026-09-04",
+      "prevision": 1074.4044807036942,
+      "borne_inferieure_95": 890.0850101476586,
+      "borne_superieure_95": 1258.7239512597298
+    },
+    {
+      "date": "2026-09-05",
+      "prevision": 977.9131609147082,
+      "borne_inferieure_95": 776.180902646086,
+      "borne_superieure_95": 1179.6454191833304
+    },
+    {
+      "date": "2026-09-06",
+      "prevision": 938.2269973400396,
+      "borne_inferieure_95": 722.4784696033432,
+      "borne_superieure_95": 1153.9755250767355
+    },
+    {
+      "date": "2026-09-07",
+      "prevision": 1056.4521721686122,
+      "borne_inferieure_95": 828.940249059188,
+      "borne_superieure_95": 1283.9640952780364
+    }
+  ],
+  "unite": "GWh/jour",
+  "niveau_intervalle_nominal": 0.95,
+  "provenance": "calculs Python de ce projet ; ne pas inventer de données",
+  "analyse_personnelle_pre_llm": "absente, confirmé par l’étudiante ; aide IA déjà fournie"
+}
+
+COMPARAISON INTERNE COMPLÈTE
+modele,MAE,RMSE,AIC,BIC
+SARIMA_211_011,32.60386938727827,42.674895986684,35807.94777174888,35838.666811632735
+SARIMA_212_011,32.73861222261927,42.806777464963545,35808.25810630449,35845.12095416512
+SARIMA_110_011,31.10763789646802,42.96708947619342,35876.30463178722,35894.736055717534
+SARIMA_110_101,31.14448402794915,43.00895404814119,35957.99373002298,35982.577088474725
+SARIMA_011_011,30.987907817575813,43.05302753218676,35860.60062017213,35879.032044102445
+SARIMA_110_111,32.09306543063875,43.24739421173715,35906.2367254604,35930.81195736749
+SARIMA_111_011,31.119351515687192,43.37341335362241,35859.82133358704,35884.39656549413
+SARIMA_311_011,33.8369350770407,43.46624685400426,35886.93848204789,35923.801329908514
+SARIMA_100_101,34.379859798721206,47.24956992047755,36058.09016586756,36088.82081341768
+auto_SARIMA,36.82506644099684,48.10499297209352,37145.4774109372,37176.206609001885
+naif_saisonnier,44.04210714285714,55.215127328089565,,
+auto_ARIMA,59.01354671172822,74.22538203070128,39583.82795857478,39614.557156639465
+naif_derniere_valeur,67.7260535714286,88.59424889841893,,
+ARIMA_110,67.68266877158727,88.91771884124248,40355.58625325009,40367.87793247597
+ARIMA_011,67.84288679719222,89.21114900198891,40236.04680350132,40248.338482727195

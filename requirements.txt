@@ -1,4 +1,4 @@
-# Dépendances de base ; versions à figer après validation complète.
+# Dépendances ; versions de calcul validées dans requirements-lock.txt.
 numpy>=1.24,<2
 pandas
 matplotlib
@@ -8,3 +8,4 @@ pmdarima==2.0.4
 holidays
 jupyterlab
 ipykernel
+nbformat

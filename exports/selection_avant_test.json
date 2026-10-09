@@ -1,0 +1,24 @@
+{
+  "modele": "SARIMA_211_011",
+  "order": [
+    2,
+    1,
+    1
+  ],
+  "seasonal_order": [
+    0,
+    1,
+    1,
+    7
+  ],
+  "trend": "n",
+  "regle": "RMSE minimale en validation interne parmi les modèles ARIMA/SARIMA convergés ; test non consulté",
+  "validation_debut": "2025-06-12",
+  "validation_fin": "2025-08-06",
+  "test_debut": "2025-08-07",
+  "test_fin": "2026-08-31",
+  "RMSE_validation": 42.674895986684,
+  "meilleur_naif_RMSE_validation": 55.215127328089565,
+  "limites": "Validation estivale réutilisée ; EDA initiale sur tout l’apprentissage ; diagnostics à commenter.",
+  "sha256_donnees": "c38d82ccd0b3e68ea5ec60854272ef3c82477e93815383ccf5cdda8a314ffe3e"
+}
