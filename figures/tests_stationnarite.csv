@@ -1,0 +1,4 @@
+Série,ADF stat,ADF p-value,KPSS stat,KPSS p-value,Conclusion
+Série brute,-4.101,0.001,0.403,0.0759,stationnaire
+Différence d'ordre 1 (Δ1),-12.207,0.0,0.016,0.1,stationnaire
+Δ1 + différence saisonnière (Δ1Δ7),-18.398,0.0,0.007,0.1,stationnaire

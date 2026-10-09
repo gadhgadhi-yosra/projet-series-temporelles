@@ -1,0 +1,13 @@
+.DS_Store
+__MACOSX/
+.ipynb_checkpoints/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+anaconda_projects/
+# Sources volumineuses : conserver leur procédure d'acquisition dans la documentation.
+data/raw/

@@ -1,0 +1,73 @@
+{
+  "archive": "WattIf-voltface.zip",
+  "fichiers": [
+    {
+      "fichier": "01_preparation_donnees.ipynb",
+      "sha256": "19c06b3b00a4743a61ccc13768012a31526476bffbf0f676e0940bd9fc5eda51"
+    },
+    {
+      "fichier": "02_eda.ipynb",
+      "sha256": "68de1b4897c2acf1e06c9575f5d33d92a43efb0c2828b7ec4770f5ba620102cb"
+    },
+    {
+      "fichier": "03_contrefactuels.ipynb",
+      "sha256": "b8295f1e2dab1a925ada8bab9235d528cd573b0eb7084738aaab9b7690d3350a"
+    },
+    {
+      "fichier": "04_visualisations.ipynb",
+      "sha256": "64c13a72c77278caf6b23b22d2f6cfb9e39929706316979e5f434ad31d40e101"
+    },
+    {
+      "fichier": "data/daily.csv",
+      "sha256": "c38d82ccd0b3e68ea5ec60854272ef3c82477e93815383ccf5cdda8a314ffe3e"
+    },
+    {
+      "fichier": "figures/acf_pacf.png",
+      "sha256": "b399385b6f176015cb4b96cb0d998b3e32f86ed372dbbd15c6e5a7f6f50ce82c"
+    },
+    {
+      "fichier": "figures/carpet_plot.png",
+      "sha256": "0663e111394fdb8c7e9d740d973ee423b3b1c45254d57980cd23345fabea3315"
+    },
+    {
+      "fichier": "figures/conso_vs_temperature.png",
+      "sha256": "4582ac344353853c1a08824b260e0b18aa91418db2a74adcd168a9ab9e451694"
+    },
+    {
+      "fichier": "figures/contrefactuel_covid.png",
+      "sha256": "9107a5f38bda0923d4f16bf0597634a97b023fde25a571661cd5d4c8f1b262c5"
+    },
+    {
+      "fichier": "figures/contrefactuel_sobriete.png",
+      "sha256": "6e5057153060fb111e20bd8051e2957a962f2e9f400d3d4ac946c30ec8635e1e"
+    },
+    {
+      "fichier": "figures/mstl.png",
+      "sha256": "74579f7343aa8e59c55df9075011c6f571395266032270dd0f5dee2d81edcaf2"
+    },
+    {
+      "fichier": "figures/resultats_covid.csv",
+      "sha256": "0ff596b4911a2984c5624d65619d7e126838a96ed1ce3248072c6ffea690f11b"
+    },
+    {
+      "fichier": "figures/resultats_sobriete.csv",
+      "sha256": "0a9c898ed16660d57b21a1692265198961c923d18023f9d620161c1334373e9c"
+    },
+    {
+      "fichier": "figures/spirale.png",
+      "sha256": "c9278bdfd040d580f0b4d5fd6cf640fa7aec8077f92c295f84ca22504dd796d9"
+    },
+    {
+      "fichier": "figures/tests_stationnarite.csv",
+      "sha256": "ca86adcf97352f7ebcffe22693680f4f3437fa38a88c3f4aad1fcb09af07c044"
+    },
+    {
+      "fichier": "figures/valeurs_aberrantes.png",
+      "sha256": "26801ec9ef0d4f1e198bd25fda744a1cf2f6d694c8751e150d97b4f54cee0f69"
+    },
+    {
+      "fichier": "figures/validation_contrefactuel.csv",
+      "sha256": "0e098dbbb418de04e0c0f6f7cb0bec7ded60237f05fa3a05fc51b2ff3c9077f6"
+    }
+  ]
+}
