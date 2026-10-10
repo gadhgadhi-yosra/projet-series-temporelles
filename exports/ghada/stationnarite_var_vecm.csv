@@ -1,0 +1,5 @@
+série,ADF stat,ADF p,KPSS stat,"KPSS p (≥0,10 = non rejet)",conclusion
+conso_gwh,-4.1012,0.001,0.4029,0.0759,stationnaire
+temp_moy,-3.4782,0.0086,0.0751,0.1,stationnaire
+Δ conso_gwh,-12.207,0.0,0.016,0.1,stationnaire
+Δ temp_moy,-19.3488,0.0,0.0176,0.1,stationnaire

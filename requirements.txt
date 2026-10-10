@@ -9,3 +9,5 @@ holidays
 jupyterlab
 ipykernel
 nbformat
+arch
+prophet

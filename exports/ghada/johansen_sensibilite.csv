@@ -1,0 +1,25 @@
+données,det_order,k_ar_diff,rang (trace),rang (λ-max)
+brutes,-1,1,1,1
+brutes,-1,2,1,1
+brutes,-1,7,1,1
+brutes,-1,13,1,1
+brutes,0,1,2,2
+brutes,0,2,2,2
+brutes,0,7,2,2
+brutes,0,13,2,2
+brutes,1,1,2,2
+brutes,1,2,2,2
+brutes,1,7,2,2
+brutes,1,13,2,2
+corrigées calendrier,-1,1,2,2
+corrigées calendrier,-1,2,2,2
+corrigées calendrier,-1,7,2,2
+corrigées calendrier,-1,13,2,2
+corrigées calendrier,0,1,2,2
+corrigées calendrier,0,2,2,2
+corrigées calendrier,0,7,2,2
+corrigées calendrier,0,13,2,2
+corrigées calendrier,1,1,2,2
+corrigées calendrier,1,2,2,2
+corrigées calendrier,1,7,2,2
+corrigées calendrier,1,13,2,2
