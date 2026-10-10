@@ -1,0 +1,5 @@
+modèle,entrées,RMSE validation,RMSE moyenne d’un réseau seul,époques retenues
+LSTM,consommation seule,46.547661547581214,51.76903989850594,"34, 16, 28, 28, 25"
+LSTM,consommation + calendrier,39.36581851510858,40.08098154035363,"33, 36, 26, 33, 14"
+GRU,consommation seule,50.06018800813454,56.40772349763351,"35, 23, 38, 7, 5"
+GRU,consommation + calendrier,38.87466177475002,39.274605272947,"35, 36, 34, 27, 36"

@@ -1,0 +1,3 @@
+modèle,entrées,RMSE validation,RMSE moyenne d’un réseau seul,époques retenues
+SARIMA + LSTM,consommation seule,44.807814821236086,44.87308958971015,"1, 1, 1, 1, 1"
+SARIMA + LSTM,consommation + calendrier,36.6041708644962,37.197845122225765,"37, 22, 14, 24, 28"

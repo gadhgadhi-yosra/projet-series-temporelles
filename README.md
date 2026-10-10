@@ -5,6 +5,8 @@
 ## Commencer ici
 
 - [Notebook exécuté](arima_sarima.ipynb) : explications, modèles, validation, diagnostics, test externe et prévisions.
+- [LSTM, GRU et hybride SARIMA + LSTM](07_lstm_gru.ipynb) : comparaison des dix modèles, quatre métriques, tests de Diebold–Mariano et conclusion calculée.
+- [Vérification LSTM/GRU](docs/verification_lstm_gru.md) : résultats, contrôles et commandes de reproduction.
 - [Section 3.1 du rapport](rapport/section_3_1_arima_sarima.md) : méthode et résultats chiffrés.
 - [Section 5 du rapport](rapport/section_5_analyse_llm.md) : vulgarisation, recommandations et audit critique.
 - [Annexe LLM](rapport/annexe_llm/README.md) : prompts et réponses intégrales, avec provenance déclarée.

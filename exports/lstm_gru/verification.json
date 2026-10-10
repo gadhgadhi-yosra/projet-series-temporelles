@@ -1,0 +1,30 @@
+{
+  "python": "3.10.8",
+  "versions": {
+    "torch": "2.12.0",
+    "numpy": "1.26.3",
+    "pandas": "2.3.3",
+    "scipy": "1.15.3",
+    "statsmodels": "0.15.0",
+    "matplotlib": "3.10.9"
+  },
+  "sha256_donnees": "c38d82ccd0b3e68ea5ec60854272ef3c82477e93815383ccf5cdda8a314ffe3e",
+  "test": {
+    "debut": "2025-08-07",
+    "fin": "2026-08-31",
+    "n": 390
+  },
+  "dm": {
+    "blocs_complets": 55,
+    "jours": 385,
+    "variance": "HAC Bartlett, 3 retards hebdomadaires",
+    "loi": "normale asymptotique",
+    "famille_holm": 45,
+    "sensibilite_retards": [
+      1,
+      2,
+      4
+    ]
+  },
+  "meilleur_rmse": "AR-GARCH(1,2)-t"
+}
