@@ -1,0 +1,28 @@
+"element","python","R","ecart_relatif_pct"
+"ADF consommation (brute)",-4.101,-4.101,0
+"KPSS consommation (brute)",0.403,0.403,0
+"SARIMA retenu : RMSE test",82.382,82.3772,0.01
+"SARIMA : couverture 95 %",0.9436,0.94359,0
+"ADF température",-3.478,-3.478,0
+"Ordre VAR (BIC / AIC)",3,3,0
+"VAR(3) : RMSE validation",48.366,48.366,0
+"Granger temp → conso (F)",118.573,118.573,0
+"Granger conso → temp (F)",6.606,6.60609,0
+"Causalité instantanée (chi2)",618.1,618.05,0.01
+"IRF : pic de réponse (GWh, jour 1)",-29.4,-29.3988,0
+"Johansen trace r = 0",337.72,337.716,0
+"Johansen trace r ≤ 1",39.55,39.5512,0
+"VECM β_temp",82.078,82.0777,0
+"VECM α_conso",-0.0181,-0.0181119,0.07
+"VECM demi-vie (jours)",37.9,37.9227,0.06
+"VAR : RMSE test",78.957,78.9573,0
+"VAR : couverture 95 %",0.931,0.930769,0.02
+"VECM : RMSE test",87.562,87.5619,0
+"VECM : couverture 95 %",0.913,0.912821,0.02
+"BIC de l'AR[1,2,7,8,14]",35533.9,35533.9,0
+"GARCH α1",0.337,0.33582,0.35
+"GARCH β1 + β2",0.663,0.66318,0.03
+"GARCH ν (Student)",4.099,4.09728,0.04
+"AR-GARCH : RMSE test",74.453,74.4434,0.01
+"AR-GARCH : couverture 95 %",0.959,0.95641,0.27
+"Témoin : RMSE test",74.062,74.0624,0

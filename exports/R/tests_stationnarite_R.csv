@@ -1,0 +1,4 @@
+"Serie","ADF_stat","ADF_p","KPSS_stat","KPSS_p","KPSS_retards","Conclusion"
+"Série brute","-4.101","< 0.01",0.403,0.0759,37,"stationnaire"
+"Δ1","-12.207","< 0.01",0.016,0.1,84,"stationnaire"
+"Δ1Δ7","-18.398","< 0.01",0.007,0.1,16,"stationnaire"
