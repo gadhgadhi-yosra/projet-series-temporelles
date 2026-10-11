@@ -1,0 +1,34 @@
+Tu es un analyste qui doit expliquer des résultats statistiques à un décideur non statisticien (par exemple un responsable de la planification d'un gestionnaire de réseau électrique). Ce lecteur ne connaît ni la RMSE, ni les tests statistiques.
+
+Contexte : consommation électrique quotidienne de la France (GWh/jour). Les modèles ont été ajustés sur 3 506 jours (du 1er janvier 2016 au 6 août 2025) et évalués sur un test de 390 jours (du 7 août 2025 au 31 août 2026), par blocs de 7 jours (horizons de 1 à 7 jours). Aucun modèle n'utilise de prévision météo. Erreurs en GWh/jour ; la MAPE est en pourcentage. Prophet est réajusté chaque semaine, les autres modèles gardent des paramètres fixes ; l'hybride SARIMA + LSTM est évalué avec des erreurs d'apprentissage pseudo hors échantillon.
+
+Résultats sur le test (dix modèles) :
+- AR-GARCH(1,2)-t : RMSE = 74,45, MAE = 48,61, MAPE = 3,78 %, couverture de l'intervalle à 95 % = 95,9 %, paramètres = 25, temps d'un ajustement = 0,10 s
+- LSTM : RMSE = 75,07, MAE = 50,26, MAPE = 3,96 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 4900, temps d'un ajustement = 7,73 s
+- GRU : RMSE = 76,40, MAE = 52,40, MAPE = 4,16 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 3684, temps d'un ajustement = 15,18 s
+- VAR(3) : RMSE = 78,96, MAE = 54,67, MAPE = 4,31 %, couverture de l'intervalle à 95 % = 93,1 %, paramètres = 40, temps d'un ajustement = 0,02 s
+- SARIMA + LSTM : RMSE = 79,92, MAE = 53,84, MAPE = 4,27 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 4905, temps d'un ajustement = 10,60 s
+- SARIMA : RMSE = 82,38, MAE = 53,12, MAPE = 4,13 %, couverture de l'intervalle à 95 % = 94,4 %, paramètres = 5, temps d'un ajustement = 2,08 s
+- VECM(12, r=1) : RMSE = 87,56, MAE = 58,71, MAPE = 4,61 %, couverture de l'intervalle à 95 % = 91,3 %, paramètres = 79, temps d'un ajustement = 0,02 s
+- Prophet : RMSE = 101,79, MAE = 75,06, MAPE = 5,91 %, couverture de l'intervalle à 95 % = 88,5 %, paramètres = 55, temps d'un ajustement = 1,78 s
+- Persistance : RMSE = 109,13, MAE = 76,63, MAPE = 6,46 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 0, temps d'un ajustement = 0,00 s
+- Naïf saisonnier : RMSE = 113,93, MAE = 76,66, MAPE = 5,97 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 0, temps d'un ajustement = 0,00 s
+- Témoin AR à variance constante : RMSE = 74,06, MAE = 49,16, MAPE = 3,84 %, couverture = 93,3 %
+
+Test de Diebold–Mariano (il compare deux modèles sur la perte moyenne de chaque bloc de 7 jours ; p corrigée = p-value corrigée des comparaisons multiples par la méthode de Holm sur 45 paires de modèles ; une p corrigée supérieure à 0,05 signifie qu'on ne peut pas affirmer que les deux modèles diffèrent) :
+- AR-GARCH contre LSTM : p brute (perte quadratique) = 0,913 ; p corrigée de Holm, perte quadratique = 1,000 ; p corrigée de Holm, perte absolue = 1,0000
+- AR-GARCH contre GRU : p brute (perte quadratique) = 0,712 ; p corrigée de Holm, perte quadratique = 1,000 ; p corrigée de Holm, perte absolue = 1,0000
+- AR-GARCH contre VAR(3) : p brute (perte quadratique) = 0,054 ; p corrigée de Holm, perte quadratique = 1,000 ; p corrigée de Holm, perte absolue = 0,0968
+- AR-GARCH contre SARIMA + LSTM : p brute (perte quadratique) = 0,265 ; p corrigée de Holm, perte quadratique = 1,000 ; p corrigée de Holm, perte absolue = 1,0000
+- AR-GARCH contre SARIMA : p brute (perte quadratique) = 0,037 ; p corrigée de Holm, perte quadratique = 0,890 ; p corrigée de Holm, perte absolue = 1,0000
+- AR-GARCH contre VECM(12, r=1) : p brute (perte quadratique) = 0,036 ; p corrigée de Holm, perte quadratique = 0,890 ; p corrigée de Holm, perte absolue = 0,0529
+- AR-GARCH contre Prophet : p brute (perte quadratique) = 0,001 ; p corrigée de Holm, perte quadratique = 0,029 ; p corrigée de Holm, perte absolue = 0,0005
+- AR-GARCH contre Persistance : p brute (perte quadratique) = 0,000 ; p corrigée de Holm, perte quadratique = 0,000 ; p corrigée de Holm, perte absolue = 0,0000
+- AR-GARCH contre Naïf saisonnier : p brute (perte quadratique) = 0,004 ; p corrigée de Holm, perte quadratique = 0,157 ; p corrigée de Holm, perte absolue = 0,0005
+
+Ta mission : rédige une explication en français, sans jargon inutile, d'environ 400 mots, qui :
+1. dise quel modèle a la plus petite erreur et ce qu'une erreur de 74,45 GWh par jour (RMSE) veut dire concrètement pour une consommation journalière moyenne de 1 258,93 GWh ;
+2. explique la différence entre une erreur plus petite et une supériorité démontrée, à partir du test de Diebold–Mariano ;
+3. compare les modèles sur la précision, la qualité des intervalles, la lisibilité et le coût de calcul ;
+4. indique ce qu'on peut et ne peut pas conclure.
+N'utilise que les chiffres ci-dessus ; si une information manque, dis-le.

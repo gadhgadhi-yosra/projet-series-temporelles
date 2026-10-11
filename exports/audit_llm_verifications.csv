@@ -1,0 +1,32 @@
+mesure,valeur
+AR-GARCH : RMSE recalculée sur le test (GWh/jour),74.45337371454465
+AR-GARCH : part des jours dont l'erreur absolue est inférieure à la RMSE (%),80.25641025641026
+AR-GARCH : couverture globale de l'intervalle à 95 % (%),95.8974358974359
+AR-GARCH : couverture à l'horizon 1 (%),94.64285714285714
+AR-GARCH : couverture à l'horizon 2 (%),96.42857142857143
+AR-GARCH : couverture à l'horizon 3 (%),94.64285714285714
+AR-GARCH : couverture à l'horizon 4 (%),94.64285714285714
+AR-GARCH : couverture à l'horizon 5 (%),98.21428571428571
+AR-GARCH : couverture à l'horizon 6 (%),96.36363636363636
+AR-GARCH : couverture à l'horizon 7 (%),96.36363636363636
+AR-GARCH : RMSE hiver (décembre à février) (GWh/jour),121.61494528012359
+AR-GARCH : couverture hiver (décembre à février) (%),91.11111111111111
+AR-GARCH : nombre de jours hiver (décembre à février),90.0
+AR-GARCH : RMSE hors hiver (GWh/jour),52.62354834173296
+AR-GARCH : couverture hors hiver (%),97.33333333333334
+AR-GARCH : nombre de jours hors hiver,300.0
+AR-GARCH : plus forte erreur absolue du test (GWh/jour),329.3501480601069
+AR-GARCH : date de la plus forte erreur absolue (aaaammjj),20260114.0
+"Modèles significativement meilleurs que la persistance après Holm, perte quadratique (sur 9)",6.0
+"AR-GARCH(1,2)-t contre persistance : p corrigée, perte quadratique",1.3781845214855008e-05
+"LSTM contre persistance : p corrigée, perte quadratique",0.0024063492624543
+"GRU contre persistance : p corrigée, perte quadratique",0.0034955101623806
+"VAR(3) contre persistance : p corrigée, perte quadratique",0.0028886039796312
+"SARIMA + LSTM contre persistance : p corrigée, perte quadratique",2.2602706560914847e-06
+"SARIMA contre persistance : p corrigée, perte quadratique",2.637199990646338e-06
+"VECM(12, r=1) contre persistance : p corrigée, perte quadratique",0.229748912018868
+"Prophet contre persistance : p corrigée, perte quadratique",1.0
+"Naïf saisonnier contre persistance : p corrigée, perte quadratique",1.0
+Rapport des variances : brute / différence simple,8.921615260986346
+Rapport des variances : différence simple / différences simple et saisonnière,1.9880691656642635
+RMSE d'AR-GARCH rapportée à la consommation moyenne (%),5.914023487030802

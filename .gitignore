@@ -12,3 +12,27 @@ venv/
 anaconda_projects/
 # Sources volumineuses : conserver leur procédure d'acquisition dans la documentation.
 data/raw/
+
+# Archive de rendu générée par scripts/creer_archive_rendu.py
+WattIf_rendu.zip
+
+# Fichiers temporaires de Word (créés quand le .docx est ouvert)
+~$*.docx
+~$*.doc
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# Windows / éditeur
+Thumbs.db
+desktop.ini
+.vscode/
+
+# Historique interne du projet (déplacé, reste dans l'historique git)
+archive/
+
+# Sujet du prof (pas besoin de le versionner)
+Mini_Projet_Series_Temporelles_2026_1.pdf
+docs/Mini_Projet_Series_Temporelles_2026_1.pdf

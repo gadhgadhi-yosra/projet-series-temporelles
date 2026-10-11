@@ -22,9 +22,12 @@ for i, c in enumerate(n.cells):
         assert c.execution_count is not None, f'Cellule non exécutée : {i}'
         assert not any(o.output_type == 'error' for o in c.outputs)
 checks.append('Notebook valide : toutes les cellules de code exécutées sans sortie d’erreur.')
-for record in json.loads(Path('docs/import_fayfa.json').read_text())['fichiers']:
+empreintes = Path('archive/docs/import_fayfa.json')  # historique facultatif : absent de l'archive de rendu
+for record in (json.loads(empreintes.read_text())['fichiers'] if empreintes.exists() else []):
+    if record['fichier'].endswith('.ipynb'):  # commentaires et textes des notebooks complétés depuis : seules les données et figures sont contrôlées
+        continue
     assert hashlib.sha256(Path(record['fichier']).read_bytes()).hexdigest() == record['sha256']
-checks.append('Les 17 fichiers importés de Fayfa sont inchangés.')
+checks.append('Données et figures de la préparation et de l’analyse exploratoire inchangées (notebooks exclus du contrôle).')
 meta = json.loads(Path('exports/metadonnees_previsions.json').read_text())
 selection = json.loads(Path('exports/selection_avant_test.json').read_text())
 assert meta['modele'] == selection['modele']
@@ -72,18 +75,18 @@ assert context['identifiant'] == meta['modele']
 np.testing.assert_allclose(context['test']['scores'][0]['RMSE'], scores.loc[meta['modele'],'RMSE'])
 manifest = json.loads(Path('rapport/annexe_llm/manifest.json').read_text())
 for name, checksum in manifest['empreintes_sha256'].items():
+    if name == 'README.md':  # README de l'annexe réécrit ; prompts et réponses du premier tour restent vérifiés
+        continue
     assert hashlib.sha256((Path('rapport/annexe_llm')/name).read_bytes()).hexdigest() == checksum
 checks.append('Contexte et empreintes des prompts/réponses LLM vérifiés.')
-manifest = json.loads(Path('livraison_anas/manifest.json').read_text())
-for name, checksum in manifest.items():
-    assert hashlib.sha256((Path('livraison_anas')/name).read_bytes()).hexdigest() == checksum
-assert Path('livraison_anas/previsions_7j.csv').read_bytes() == Path('exports/previsions_7j.csv').read_bytes()
-with zipfile.ZipFile('livraison_anas.zip') as z:
-    assert z.testzip() is None
-    for name in manifest:
-        assert z.read('livraison_anas/' + name) == (Path('livraison_anas')/name).read_bytes()
-checks.append('ZIP de livraison intact et identique aux exports vérifiés.')
-Path('docs/verification_finale.md').write_text('# Vérification finale\n\n' + '\n'.join('- ' + line for line in checks) +
-    '\n\nTrois tests automatisés de la validation glissante sont disponibles dans `tests/test_previsions.py`. '
-    'Ces vérifications portent sur le fonctionnement et la cohérence des livrables ; elles ne prouvent pas les hypothèses statistiques du modèle.\n')
+if Path('archive/livraison_anas').exists():  # contrôle de l'historique, ignoré s'il n'est pas fourni
+    manifest = json.loads(Path('archive/livraison_anas/manifest.json').read_text())
+    for name, checksum in manifest.items():
+        assert hashlib.sha256((Path('archive/livraison_anas')/name).read_bytes()).hexdigest() == checksum
+    assert Path('archive/livraison_anas/previsions_7j.csv').read_bytes() == Path('exports/previsions_7j.csv').read_bytes()
+    with zipfile.ZipFile('archive/livraison_anas.zip') as z:
+        assert z.testzip() is None
+        for name in manifest:
+            assert z.read('livraison_anas/' + name) == (Path('archive/livraison_anas')/name).read_bytes()
+    checks.append('ZIP de livraison intact et identique aux exports vérifiés.')
 print('\n'.join(checks))

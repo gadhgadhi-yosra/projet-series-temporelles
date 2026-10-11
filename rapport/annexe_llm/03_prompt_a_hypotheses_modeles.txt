@@ -1,0 +1,15 @@
+Tu es statisticien, spécialiste des séries temporelles. Je prépare un mini-projet sur la consommation électrique quotidienne de la France métropolitaine (RTE éCO2mix), en GWh par jour, du 1er janvier 2016 au 6 août 2025 (3 506 jours consécutifs, période d'apprentissage). Je dispose aussi de la température moyenne nationale (°C), du jour de la semaine et des jours fériés. Le but est de prévoir la consommation à sept jours.
+
+Voici les statistiques descriptives de la série (la différence simple est Δ1 ; la différence saisonnière est de période 7 jours ; KPSS avec constante ; ADF avec choix des retards par AIC) :
+
+- Consommation électrique (GWh/jour) : n = 3506 ; moyenne = 1 258,93 ; variance = 63 882,41 ; écart-type = 252,75 ; minimum = 854,85 ; maximum = 2 150,40 ; skewness = 0,69 ; kurtosis excédentaire = -0,43 ; ADF : statistique = -4,10, p-value = 0,0010 ; KPSS : statistique = 0,40, p-value = 0,0759
+- Consommation électrique (différence simple) (GWh/jour) : n = 3505 ; moyenne = -0,09 ; variance = 7 160,41 ; écart-type = 84,62 ; minimum = -284,44 ; maximum = 290,41 ; skewness = 0,44 ; kurtosis excédentaire = 0,44 ; ADF : statistique = -12,21, p-value = 0,0000 ; KPSS : statistique = 0,02, p-value = 0,1000
+- Consommation électrique (différence simple et saisonnière) (GWh/jour) : n = 3498 ; moyenne = -0,11 ; variance = 3 601,69 ; écart-type = 60,01 ; minimum = -295,93 ; maximum = 317,07 ; skewness = 0,07 ; kurtosis excédentaire = 2,52 ; ADF : statistique = -18,40, p-value = 0,0000 ; KPSS : statistique = 0,01, p-value = 0,1000
+- Température moyenne nationale (°C) : n = 3506 ; moyenne = 13,34 ; variance = 37,91 ; écart-type = 6,16 ; minimum = -3,19 ; maximum = 28,98 ; skewness = 0,05 ; kurtosis excédentaire = -0,94 ; ADF : statistique = -3,48, p-value = 0,0086 ; KPSS : statistique = 0,08, p-value = 0,1000
+
+Ta mission : à partir uniquement de ces statistiques, propose des hypothèses de modèles à tester.
+1. Pour chaque famille de modèles que tu proposes (par exemple SARIMA, VAR, GARCH, réseaux de neurones récurrents…), indique les ordres ou réglages plausibles et la statistique précise ci-dessus qui motive l'hypothèse.
+2. Indique les choix de différenciation (d, D) et leur justification, en discutant le fait que l'ADF et le KPSS ne concordent pas forcément.
+3. Pour chaque hypothèse, précise ce que ces statistiques ne permettent PAS de conclure et quel diagnostic complémentaire il faudrait faire.
+4. Si tu cites un chiffre, il doit figurer dans les données ci-dessus ; si une information te manque, dis-le au lieu de la supposer.
+Réponds en français, de façon structurée.

@@ -1,69 +1,101 @@
-# WattIf — consommation électrique et prévisions
+# WattIf — Consommation électrique quotidienne en France : prévision à 7 jours, contrefactuels COVID et sobriété
 
-**La partie ARIMA/SARIMA est exécutée jusqu'aux prévisions finales.** Le projet conserve les données, notebooks et figures de Fayfa, puis ajoute la modélisation et les livrables de la partie prévision.
+Mini-projet de séries temporelles (Tek-Up, 3e année ingénieur Data Science et IA).
 
-## Commencer ici
+## Présentation
 
-- [Notebook exécuté](arima_sarima.ipynb) : explications, modèles, validation, diagnostics, test externe et prévisions.
-- [LSTM, GRU et hybride SARIMA + LSTM](07_lstm_gru.ipynb) : comparaison des dix modèles, quatre métriques, tests de Diebold–Mariano et conclusion calculée.
-- [Vérification LSTM/GRU](docs/verification_lstm_gru.md) : résultats, contrôles et commandes de reproduction.
-- [Section 3.1 du rapport](rapport/section_3_1_arima_sarima.md) : méthode et résultats chiffrés.
-- [Section 5 du rapport](rapport/section_5_analyse_llm.md) : vulgarisation, recommandations et audit critique.
-- [Annexe LLM](rapport/annexe_llm/README.md) : prompts et réponses intégrales, avec provenance déclarée.
-- [Livraison pour Anas](livraison_anas/README.md) et `livraison_anas.zip` : fichiers à transmettre manuellement.
-- [État des tâches](docs/etat_du_projet.md) et [vérifications](docs/verification_finale.md).
+Le projet étudie la consommation électrique quotidienne de la France (RTE éCO2mix, 3 896 jours du 1er janvier 2016 au 31 août 2026) avec la température moyenne nationale (ODRÉ). Il poursuit deux objectifs :
 
-**Point personnel restant :** l'étudiante a confirmé ne pas avoir rédigé d'analyse avant l'aide IA. Cette condition du sujet ne peut pas être satisfaite rétroactivement. Les textes fournis sont déclarés comme assistés. Une [réflexion personnelle après assistance](rapport/reflexion_personnelle_a_rediger.md) reste à rédiger par l'étudiante.
+1. **prévoir** la consommation à sept jours et comparer dix modèles sur un protocole commun (SARIMA, VAR, VECM, AR-GARCH, Prophet, LSTM, GRU, hybride SARIMA + LSTM, deux références naïves) ;
+2. **mesurer** l'effet du premier confinement de 2020 et de la sobriété de 2022-2025 par une analyse contrefactuelle.
 
-## Résultat principal
+Le découpage est chronologique : **90 % d'apprentissage (3 506 jours, jusqu'au 6 août 2025) et 10 % de test (390 jours, du 7 août 2025 au 31 août 2026)**.
 
-Modèle sélectionné : **SARIMA(2,1,1)(0,1,1)[7]**. Sur le test externe, RMSE **82,38 GWh/jour**, contre **113,93** pour le naïf saisonnier. Couverture observée des intervalles nominaux à 95 % : **94,36 %**. Les diagnostics résiduels restent défavorables ; le rapport les expose.
+**Résultat principal.** Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » obtient une RMSE de 74,06 GWh/jour.
 
-Les sept prévisions concernent le **1er–7 septembre 2026**, après la dernière observation du 31 août 2026. Elles ne sont pas des prévisions pour octobre.
+Le rapport complet est dans `rapport/rapport_final.pdf` (et `rapport/rapport_final.docx`).
 
-## Organisation
+## Auteurs
 
-| Chemin | Rôle |
+| Auteur(e) | Parties | Fichiers principaux |
+|---|---|---|
+| Fayfa | Données, analyse exploratoire, contrefactuels, visualisations | `01_preparation_donnees.ipynb`, `02_eda.ipynb`, `03_contrefactuels.ipynb`, `04_visualisations.ipynb` |
+| Yosra | ARIMA/SARIMA, IA générative et LLM | `arima_sarima.ipynb`, `rapport/annexe_llm/` |
+| Ghada | VAR, Granger, VECM, GARCH, Prophet | `05_var_vecm_garch_prophet.ipynb` |
+| Anwar | Socle classique en R, corrélation glissante | `06_section3_R.ipynb` |
+| Anas | LSTM, GRU, hybride, comparaison finale | `07_lstm_gru.ipynb` |
+
+## Structure des dossiers
+
+| Chemin | Contenu |
 |---|---|
-| `01_preparation_donnees.ipynb` à `04_visualisations.ipynb` | Travail fourni par Fayfa, conservé tel quel |
-| `data/daily.csv` | 3 896 observations quotidiennes, cible `conso_gwh` |
-| `arima_sarima.ipynb` | Partie prévision exécutée |
-| `scripts/finalisation.py` | Complément de modèles, sélection, test et exports |
-| `scripts/executer_comparaison.py` | Exécution de toutes les cellules du notebook |
-| `exports/` | Tableaux, prévisions, diagnostics, paramètres et métadonnées |
-| `figures/arima_sarima/` | Graphiques de cette partie |
-| `rapport/` | Sections du rapport et annexe LLM |
-| `tests/` | Vérifications du protocole glissant |
-| `livraison_anas/` | Dossier prêt à transmettre |
+| `data/daily.csv` | jeu de données préparé (une ligne par jour, cible `conso_gwh`) |
+| `01_…` à `07_…`, `arima_sarima.ipynb` | les huit notebooks (sept en Python, un en R) |
+| `scripts/` | scripts d'exécution, de mesure et d'assemblage du rapport |
+| `exports/` | tableaux de résultats (`exports/ghada/`, `exports/R/`, `exports/lstm_gru/`) |
+| `forecasts/` | prévisions du test (390 jours) de chaque modèle |
+| `figures/` | graphiques |
+| `rapport/` | sections du rapport, `rapport_final.*`, annexe LLM (`rapport/annexe_llm/`) |
+| `tests/` | tests automatiques du protocole de prévision et des tests statistiques |
+| `requirements.txt`, `R_packages.txt` | dépendances Python épinglées, paquets R |
 
-## Reproduire la partie prévision
+## Installation
 
-Ouvrir le dossier à sa racine. L'environnement `.venv` local est déjà installé pour les calculs de cette partie. Dans VS Code, sélectionner son interpréteur pour le notebook. Pour une nouvelle installation :
+Python 3.11 :
 
 ```sh
-python3 -m venv .venv
-source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate            # Windows : .\.venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-Les versions exactes de l'environnement de calcul (Python 3.9 sur macOS) sont dans `requirements-lock.txt`. Pour cet environnement, pmdarima 2.0.4 utilise NumPy < 2 ; consulter les [notes officielles de pmdarima](https://github.com/alkaline-ml/pmdarima/releases) avant de modifier cet ensemble de versions.
+R 4.5.2, pour le notebook `06_section3_R.ipynb` (voir `R_packages.txt`) :
 
-```sh
-.venv/bin/python scripts/executer_comparaison.py
-.venv/bin/python scripts/preparer_rapport.py
-.venv/bin/python scripts/preparer_livraison.py
-.venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python scripts/verifier_livrables.py
+```r
+install.packages(c("forecast", "tseries", "urca", "tsibble", "vars", "rugarch", "uroot", "zoo", "sandwich", "lmtest", "IRdisplay", "IRkernel"))
+IRkernel::installspec()
 ```
 
-Le script d'exécution enregistre les sorties dans le notebook : fermer/recharger l'éditeur pour éviter d'écraser ces sorties avec une ancienne version ouverte. La recherche automatique peut prendre quelques minutes et émettre des avertissements de candidats non convergés ; les modèles finalement utilisés doivent converger.
+## Ordre d'exécution des notebooks
 
-Les réponses LLM sont des archives de cette session, pas des textes régénérés automatiquement par un script. Si les données ou les paramètres changent, conserver l'ancienne annexe, puis en préparer une nouvelle et actualiser la section 5. Le vérificateur contrôle que son contexte reste cohérent avec les résultats.
+Tous les notebooks se lancent depuis la racine du projet et s'exécutent de haut en bas.
 
-## Méthode et limites
+| Ordre | Notebook | Langage | Rôle | Dépend de |
+|---|---|---|---|---|
+| 1 | `01_preparation_donnees.ipynb` | Python | construit `data/daily.csv` | `data/raw/` (voir ci-dessous) |
+| 2 | `02_eda.ipynb` | Python | analyse exploratoire (section 2) | `data/daily.csv` |
+| 3 | `03_contrefactuels.ipynb` | Python | contrefactuels (section 7.2) | `data/daily.csv` |
+| 4 | `04_visualisations.ipynb` | Python | spirale et carpet plot | `data/daily.csv` |
+| 5 | `arima_sarima.ipynb` | Python | ARIMA et SARIMA (section 3.1) | `data/daily.csv`, `scripts/finalisation.py` |
+| 6 | `05_var_vecm_garch_prophet.ipynb` | Python | VAR, VECM, GARCH, Prophet (sections 3.2, 3.3, 4.3) | notebook `arima_sarima` |
+| 7 | `06_section3_R.ipynb` | R | socle classique en R (section 3.4) et corrélation glissante (section 7.1) | notebooks `arima_sarima` et 05 |
+| 8 | `07_lstm_gru.ipynb` | Python | LSTM, GRU, hybride, comparaison et tests (sections 4.1, 4.2, 6) | notebooks `arima_sarima` et 05 |
 
-Découpage externe de Fayfa : 3 506 jours jusqu'au 6 août 2025 pour l'apprentissage ; 390 jours de test à partir du 7 août 2025. La sélection utilise huit semaines de validation interne et reste exploratoire (EDA préalable et réutilisation de la validation). Les ordres sont figés avant le test externe. Les paramètres restent fixes durant chaque évaluation glissante ; seuls les états sont actualisés.
+**Données brutes.** Les fichiers sources (`data/raw/`) ne sont pas fournis, en raison de leur taille. La première cellule de code du notebook 01 détecte leur absence, affiche les adresses de téléchargement (ODRÉ : `eco2mix-national-cons-def` et `temperature-quotidienne-regionale`) et s'arrête ; les autres notebooks utilisent `data/daily.csv`, qui est fourni.
 
-Les sources brutes `data/raw/` ne sont pas incluses dans l'archive. La préparation de Fayfa ne peut donc pas être réexécutée entièrement en l'état ; ses autres notebooks et leurs résultats n'ont pas été recalculés ici. Les modèles de prévision utilisent directement `data/daily.csv`.
+Calculs complémentaires du rapport (après les notebooks) :
 
-Aucun fichier n'a été envoyé à Anas et aucun dépôt GitHub n'a été publié. Le `.gitignore` exclut l'environnement et les fichiers techniques ; les résultats scientifiques restent partageables sous réserve des droits sur les données.
+```sh
+python scripts/stats_descriptives.py     # statistiques descriptives (section 5)
+python scripts/garch_volatilite.py       # volatilité conditionnelle et événements (section 3.3)
+python scripts/courbes_perte.py          # courbes de perte train/validation (section 4.1)
+python scripts/cv_temporelle.py          # validation croisée temporelle, environ 9 minutes sur CPU (section 4.1)
+python scripts/mesures_complexite.py     # nombre de paramètres et temps d'ajustement (section 6)
+python scripts/preparer_prompts_llm.py   # prompts de la section 5
+python scripts/audit_reponses_llm.py     # vérifications chiffrées de l'audit des réponses du LLM (section 5.6)
+python scripts/generer_annexes.py        # tableaux de l'annexe A
+python scripts/assembler_rapport.py      # rapport_final.md, .docx et .pdf (pandoc et Edge ou Chrome requis)
+python -m unittest discover -s tests -v  # tests automatiques
+python scripts/verifier_livrables.py     # contrôles de cohérence des exports
+```
+
+## Reproductibilité
+
+- **Graines.** Python : `numpy.random.seed(42)` (notebooks 01 et 02), `SEED = 42` (notebook 05, tirages de Prophet), graines 42 à 46 pour les cinq réseaux de chaque modèle (notebook 07, `torch.manual_seed`, calcul déterministe sur un seul fil). R : `set.seed(42)` (notebook 06). Les scripts de `scripts/` utilisent les mêmes graines.
+- **Versions.** `requirements.txt` épingle l'environnement Python 3.11 dans lequel les scripts, les tests et les calculs complémentaires ont été exécutés. Les sorties enregistrées dans les notebooks proviennent de plusieurs environnements, dont les versions sont affichées dans les notebooks (Python 3.13.5 avec pandas 2.2.3 pour les notebooks 01 à 04 ; numpy 1.26.4, pandas 2.3.3, statsmodels 0.14.6 et pmdarima 2.0.4 pour `arima_sarima` ; Python 3.11.5, pandas 3.0.6, arch 8.0.0 et prophet 1.5.0 pour le notebook 05 ; R 4.5.2 pour le notebook 06 ; Python 3.10.8 et PyTorch 2.12.0 pour le notebook 07). Selon les versions des paquets, de petits écarts numériques (inférieurs à 0,01 sur les métriques du modèle retenu) sont possibles à la réexécution.
+- **Contraintes de versions.** `pmdarima 2.0.4` (recherche `auto_arima`, notebooks 02 et `arima_sarima`) impose `numpy < 2` et `scikit-learn == 1.6.1` : avec scikit-learn 1.9.1, il échoue avec `TypeError: check_array() got an unexpected keyword argument 'force_all_finite'`. Le notebook 07 demande `pandas < 3`. `requirements.txt` épingle donc `numpy==1.26.4`, `pandas==2.3.3` et `scikit-learn==1.6.1`.
+- **Chemins.** Tous les chemins sont relatifs à la racine du projet.
+
+## Limites principales
+
+Un seul hiver de test, validation interne courte et estivale, aucune météo future, protocoles légèrement différents selon les modèles (Prophet réajusté chaque semaine, hybride pseudo hors échantillon, tests de Diebold–Mariano sur 385 jours contre 390 pour les métriques), diagnostics résiduels défavorables pour tous les modèles statistiques. Le détail figure dans les sections 8 et 9 du rapport.

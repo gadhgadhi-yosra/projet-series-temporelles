@@ -1,0 +1,32 @@
+Tu es conseiller en gestion de réseau électrique. À partir des prévisions ci-dessous, propose des recommandations de gestion (par exemple anticipation d'un pic de consommation, dimensionnement d'une marge de sécurité, choix du modèle à utiliser au quotidien).
+
+Contexte : consommation électrique quotidienne de la France (GWh/jour). Les modèles ont été ajustés sur 3 506 jours (du 1er janvier 2016 au 6 août 2025) et évalués sur un test de 390 jours (du 7 août 2025 au 31 août 2026), par blocs de 7 jours (horizons de 1 à 7 jours). Aucun modèle n'utilise de prévision météo. Erreurs en GWh/jour ; la MAPE est en pourcentage. Prophet est réajusté chaque semaine, les autres modèles gardent des paramètres fixes ; l'hybride SARIMA + LSTM est évalué avec des erreurs d'apprentissage pseudo hors échantillon.
+
+Prévisions de consommation du 1er au 7 septembre 2026 (GWh/jour ; la dernière observation disponible est celle du 31 août 2026) :
+- 2026-09-01 (mardi) : SARIMA = 1 086,54 ; SARIMA + LSTM = 1 093,08 ; LSTM = 1 095,60 ; GRU = 1 087,80 ; AR-GARCH = 1 079,10 [intervalle à 95 % : 1 030,19 à 1 128,01] ; VAR = 1 097,54 ; VECM = 1 100,64 ; Prophet = 1 090,11
+- 2026-09-02 (mercredi) : SARIMA = 1 090,60 ; SARIMA + LSTM = 1 096,77 ; LSTM = 1 096,01 ; GRU = 1 090,15 ; AR-GARCH = 1 082,29 [intervalle à 95 % : 1 004,74 à 1 159,84] ; VAR = 1 102,98 ; VECM = 1 110,17 ; Prophet = 1 094,77
+- 2026-09-03 (jeudi) : SARIMA = 1 085,84 ; SARIMA + LSTM = 1 083,02 ; LSTM = 1 100,61 ; GRU = 1 087,40 ; AR-GARCH = 1 082,22 [intervalle à 95 % : 985,06 à 1 179,38] ; VAR = 1 099,00 ; VECM = 1 108,48 ; Prophet = 1 094,20
+- 2026-09-04 (vendredi) : SARIMA = 1 074,40 ; SARIMA + LSTM = 1 069,49 ; LSTM = 1 086,72 ; GRU = 1 070,77 ; AR-GARCH = 1 064,36 [intervalle à 95 % : 953,10 à 1 175,61] ; VAR = 1 083,43 ; VECM = 1 086,69 ; Prophet = 1 080,21
+- 2026-09-05 (samedi) : SARIMA = 977,91 ; SARIMA + LSTM = 969,79 ; LSTM = 980,75 ; GRU = 962,05 ; AR-GARCH = 954,01 [intervalle à 95 % : 832,24 à 1 075,79] ; VAR = 973,08 ; VECM = 977,74 ; Prophet = 972,48
+- 2026-09-06 (dimanche) : SARIMA = 938,23 ; SARIMA + LSTM = 930,29 ; LSTM = 936,71 ; GRU = 910,15 ; AR-GARCH = 906,98 [intervalle à 95 % : 776,98 à 1 036,98] ; VAR = 923,66 ; VECM = 933,00 ; Prophet = 925,55
+- 2026-09-07 (lundi) : SARIMA = 1 056,45 ; SARIMA + LSTM = 1 044,81 ; LSTM = 1 078,25 ; GRU = 1 046,23 ; AR-GARCH = 1 049,73 [intervalle à 95 % : 913,05 à 1 186,42] ; VAR = 1 067,23 ; VECM = 1 071,65 ; Prophet = 1 071,15
+
+Erreur de test d'AR-GARCH(1,2)-t selon l'horizon (RMSE, GWh/jour) : horizon 1 : 37,9 ; horizon 2 : 52,6 ; horizon 3 : 73,6 ; horizon 4 : 78,3 ; horizon 5 : 76,0 ; horizon 6 : 90,2 ; horizon 7 : 96,2.
+Précision générale sur le test : voir le tableau suivant.
+- AR-GARCH(1,2)-t : RMSE = 74,45, MAE = 48,61, MAPE = 3,78 %, couverture de l'intervalle à 95 % = 95,9 %, paramètres = 25, temps d'un ajustement = 0,10 s
+- LSTM : RMSE = 75,07, MAE = 50,26, MAPE = 3,96 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 4900, temps d'un ajustement = 7,73 s
+- GRU : RMSE = 76,40, MAE = 52,40, MAPE = 4,16 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 3684, temps d'un ajustement = 15,18 s
+- VAR(3) : RMSE = 78,96, MAE = 54,67, MAPE = 4,31 %, couverture de l'intervalle à 95 % = 93,1 %, paramètres = 40, temps d'un ajustement = 0,02 s
+- SARIMA + LSTM : RMSE = 79,92, MAE = 53,84, MAPE = 4,27 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 4905, temps d'un ajustement = 10,60 s
+- SARIMA : RMSE = 82,38, MAE = 53,12, MAPE = 4,13 %, couverture de l'intervalle à 95 % = 94,4 %, paramètres = 5, temps d'un ajustement = 2,08 s
+- VECM(12, r=1) : RMSE = 87,56, MAE = 58,71, MAPE = 4,61 %, couverture de l'intervalle à 95 % = 91,3 %, paramètres = 79, temps d'un ajustement = 0,02 s
+- Prophet : RMSE = 101,79, MAE = 75,06, MAPE = 5,91 %, couverture de l'intervalle à 95 % = 88,5 %, paramètres = 55, temps d'un ajustement = 1,78 s
+- Persistance : RMSE = 109,13, MAE = 76,63, MAPE = 6,46 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 0, temps d'un ajustement = 0,00 s
+- Naïf saisonnier : RMSE = 113,93, MAE = 76,66, MAPE = 5,97 %, couverture de l'intervalle à 95 % = sans intervalle, paramètres = 0, temps d'un ajustement = 0,00 s
+- Témoin AR à variance constante : RMSE = 74,06, MAE = 49,16, MAPE = 3,84 %, couverture = 93,3 %
+
+Ta mission :
+1. Donne des recommandations de gestion concrètes et priorisées, chacune reliée à un chiffre ci-dessus.
+2. Formule toi-même, pour chaque recommandation, ses limites et ses risques (hypothèses non vérifiées, erreurs possibles, ce qui pourrait la rendre fausse).
+3. Indique explicitement ce que ces données ne permettent pas de décider.
+Réponds en français, de façon structurée. Ne présente aucune causalité comme démontrée si elle ne l'est pas par les données fournies.

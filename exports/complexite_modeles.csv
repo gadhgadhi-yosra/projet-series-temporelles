@@ -1,0 +1,12 @@
+modèle,nombre de paramètres estimés,temps d'un ajustement (s),ajustements du protocole,remarques,machine
+"SARIMA(2,1,1)(0,1,1)[7]",5,2.0805905999986862,1,"paramètres : 2 AR, 1 MA, 1 MA saisonnier et variance du bruit","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+VAR(3),40,0.01768399999855319,1,"coefficients des deux équations (constante, retards, calendrier)","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+"VECM(12, r = 1)",79,0.016444799999590032,1,"α, β (normalisé), coefficients de court terme, constante et calendrier","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+"AR-GARCH(1,2)-t",25,0.10165440000128001,1,"régression de calendrier (14) + AR creux (constante, 5 retards) + variance (ω, α, 2 β) + loi de Student (ν)","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+"Témoin : AR creux, variance constante",21,0.007903200003056554,1,"régression de calendrier (14) + AR creux (constante, 5 retards) + variance constante","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+Prophet,55,1.7793617000024824,56,"tendance (k, m, 25 variations), bruit et 27 coefficients de saisonnalité et de jours fériés ; ré-ajusté à chaque bloc de 7 jours (56 ajustements pour le test)","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+LSTM,4900,7.734659199999442,5,"un réseau, 33 époques ; le modèle évalué moyenne 5 réseaux (5 graines)","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+GRU,3684,15.184083199997986,5,"un réseau, 35 époques ; le modèle évalué moyenne 5 réseaux (5 graines)","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+SARIMA + LSTM,4905,10.600916299998062,6,"SARIMA + un LSTM (37 époques) ; temps approché : le LSTM est entraîné ici sur la consommation, génération des erreurs d'apprentissage non incluse ; le modèle évalué moyenne 5 réseaux","Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+Naïf saisonnier,0,0.0,0,copie de la valeur observée sept jours plus tôt,"Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
+Persistance,0,0.0,0,copie de la dernière valeur observée,"Intel64 Family 6 Model 140 Stepping 1, GenuineIntel ; Python 3.11.9 ; torch 2.14.1+cpu"
