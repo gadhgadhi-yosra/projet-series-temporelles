@@ -11,7 +11,7 @@ Le projet étudie la consommation électrique quotidienne de la France (RTE éCO
 
 Le découpage est chronologique : **90 % d'apprentissage (3 506 jours, jusqu'au 6 août 2025) et 10 % de test (390 jours, du 7 août 2025 au 31 août 2026)**.
 
-**Résultat principal.** Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » obtient une RMSE de 74,06 GWh/jour.
+**Résultat principal.** Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé sur le test, à égalité avec le GRU en validation croisée ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » obtient une RMSE de 74,06 GWh/jour.
 
 Le rapport complet est dans `rapport/rapport_final.pdf` (et `rapport/rapport_final.docx`).
 
@@ -80,6 +80,7 @@ python scripts/stats_descriptives.py     # statistiques descriptives (section 5)
 python scripts/garch_volatilite.py       # volatilité conditionnelle et événements (section 3.3)
 python scripts/courbes_perte.py          # courbes de perte train/validation (section 4.1)
 python scripts/cv_temporelle.py          # validation croisée temporelle, environ 9 minutes sur CPU (section 4.1)
+python scripts/cv_ar_garch.py            # validation croisée d'AR-GARCH et du témoin AR sur les mêmes plis, quelques secondes (annexe A)
 python scripts/mesures_complexite.py     # nombre de paramètres et temps d'ajustement (section 6)
 python scripts/preparer_prompts_llm.py   # prompts de la section 5
 python scripts/audit_reponses_llm.py     # vérifications chiffrées de l'audit des réponses du LLM (section 5.6)

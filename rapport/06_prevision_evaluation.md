@@ -4,7 +4,7 @@ Cette section compare les dix modèles sur le test externe (notebook `07_lstm_gr
 
 ## 6.1 Conclusion sur le modèle final
 
-Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (AR sur les retards 1, 2, 7, 8 et 14, même calendrier, sans GARCH) obtient une RMSE de **74,06 GWh/jour**, légèrement meilleure : le gain vient de la moyenne autorégressive avec calendrier, non de la modélisation de la variance, qui améliore en revanche la couverture des intervalles (95,9 % contre 93,3 %).
+Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé sur le test, à égalité avec le GRU en validation croisée ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (AR sur les retards 1, 2, 7, 8 et 14, même calendrier, sans GARCH) obtient une RMSE de **74,06 GWh/jour**, légèrement meilleure : le gain vient de la moyenne autorégressive avec calendrier, non de la modélisation de la variance, qui améliore en revanche la couverture des intervalles (95,9 % contre 93,3 %), sans les rendre assez larges en hiver (section 6.6).
 
 ## 6.2 Protocole de comparaison
 
@@ -18,7 +18,7 @@ Tous les modèles prévoient **les mêmes 390 jours** (du 7 août 2025 au 31 ao�
 
 ## 6.3 Tableau récapitulatif des modèles
 
-[[TAB:scores|Comparaison des modèles sur le test externe (390 jours)|AR-GARCH a la plus petite erreur et la meilleure couverture ; les réseaux sont juste derrière mais plus coûteux et opaques ; Prophet et les naïfs sont nettement en retrait.]]
+[[TAB:scores|Comparaison des modèles sur le test externe (390 jours)|AR-GARCH a la plus petite erreur et la seule couverture qui atteint 95 % sur ce test ; les réseaux sont juste derrière mais plus coûteux et opaques ; Prophet et les naïfs sont nettement en retrait.]]
 
 | Modèle | MSE | RMSE | MAE | MAPE (%) | Couverture à 95 % | Paramètres | Temps d'un ajustement (s) | Interprétabilité |
 |---|---|---|---|---|---|---|---|---|
@@ -92,14 +92,14 @@ Les comparaisons demandées par le sujet (LSTM contre GRU, meilleur réseau cont
 
 Pour un **gestionnaire de réseau** qui doit anticiper la consommation à sept jours, la performance brute ne départage pas les cinq meilleurs modèles (écarts de RMSE de 74,45 à 82,38 GWh/jour, non significatifs après correction). Le choix repose donc sur les autres critères.
 
-[[TAB:usage|Choix du modèle selon le cas d'usage|AR-GARCH offre le meilleur compromis ; le GRU et le LSTM sont les meilleurs challengers, au prix de l'interprétabilité et sans intervalles.]]
+[[TAB:usage|Choix du modèle selon le cas d'usage|AR-GARCH reste recommandé, malgré des intervalles trop étroits en hiver ; le GRU et le LSTM sont les meilleurs challengers, au prix de l'interprétabilité et sans intervalles.]]
 
 | Critère | AR-GARCH(1,2)-t | SARIMA | VAR(3) | LSTM / GRU | Prophet |
 |---|---|---|---|---|---|
 | Précision (RMSE de test) | meilleure (74,45) | 82,38 | 78,96 | 75,07 / 76,40 | 101,79 |
-| Intervalles de prévision | les mieux calibrés (95,9 %) | 94,4 % | 93,1 % | aucun | 88,5 % (trop étroits) |
+| Couverture des intervalles à 95 % sur le test | 95,9 % (86,9 % sur les plis d'hiver de la validation croisée) | 94,4 % | 93,1 % | aucun | 88,5 % (trop étroits) |
 | Interprétabilité | élevée | élevée | élevée | faible | élevée |
 | Coût d'un ajustement | 0,10 s | 2,08 s | 0,02 s | 7,73 s / 15,18 s, × 5 graines | 1,78 s × 56 |
-| RMSE moyenne des plis d'hiver de la validation croisée (GWh/jour) | non mesurée | 154,97 | non mesurée | 141,46 / 138,80 | non mesurée |
+| RMSE moyenne de la validation croisée : cinq plis (plis d'hiver) | 96,74 (136,65) | 107,89 (154,97) | non mesurée | 99,62 / 96,54 (141,46 / 138,80) | non mesurée |
 
-**Notre recommandation** est de retenir un modèle de type **AR-GARCH(1,2)-t** comme modèle opérationnel : c'est le meilleur observé, ses intervalles sont les mieux calibrés (utile pour dimensionner une marge de sécurité), il est interprétable et son coût est négligeable. Le **SARIMA** reste la référence statistique justifiée par la règle de validation, et le **GRU ou le LSTM** le meilleur challenger : ils battent le SARIMA dans la quasi-totalité des plis de la validation croisée, surtout en hiver, mais sans intervalles, sans interprétation et pour un coût plus élevé. Combiner les prévisions (par exemple moyenne d'AR-GARCH et d'un réseau) est une piste naturelle, non évaluée ici. **Prophet n'est pas adapté** à la prévision à sept jours. Cette recommandation reste conditionnelle : un seul hiver de test, des écarts non significatifs, et aucune validation croisée d'AR-GARCH.
+**Notre recommandation** est de retenir un modèle de type **AR-GARCH(1,2)-t** comme modèle opérationnel : il est le meilleur observé sur le test, à égalité avec le GRU en validation croisée (RMSE moyenne de 96,74 contre 96,54 GWh/jour ; annexe A, tableau @tab:annexe_cv_garch), interprétable, quasi instantané, et le seul de ces deux modèles à fournir des intervalles. **Ces intervalles sont toutefois trop étroits en hiver** : leur couverture, de 95,9 % sur le test, n'est que de 86,9 % sur les plis d'hiver de la validation croisée et de 67,9 % pendant l'hiver 2022-23. En exploitation, il faudrait les élargir en hiver ou modéliser une variance saisonnière. Le **SARIMA** reste la référence statistique justifiée par la règle de validation, et le **GRU ou le LSTM** le meilleur challenger : ils battent le SARIMA dans la quasi-totalité des plis de la validation croisée, surtout en hiver, mais sans intervalles, sans interprétation et pour un coût plus élevé. Combiner les prévisions (par exemple moyenne d'AR-GARCH et d'un réseau) est une piste naturelle, non évaluée ici. **Prophet n'est pas adapté** à la prévision à sept jours. Cette recommandation reste conditionnelle : un seul hiver de test, des écarts non significatifs, et une validation croisée où AR-GARCH n'est le meilleur dans aucun pli.

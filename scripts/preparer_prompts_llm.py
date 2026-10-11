@@ -1,4 +1,4 @@
-"""Prépare les trois prompts complets du second tour LLM (section 5) à partir des fichiers de résultats.
+"""Prépare les trois prompts complets du premier tour LLM, mené avec Claude (section 5) à partir des fichiers de résultats.
 
 Sorties dans rapport/annexe_llm/ :
     03_prompt_a_hypotheses_modeles.txt, 04_prompt_b_vulgarisation_decideur.txt, 05_prompt_c_recommandations_gestion.txt.

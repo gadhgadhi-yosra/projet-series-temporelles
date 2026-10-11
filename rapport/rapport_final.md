@@ -33,13 +33,13 @@ Mini-projet de séries temporelles — Tek-Up, 3e année Data Science et IA — 
   - [4.2 Approche hybride : SARIMA + LSTM](#42-approche-hybride--sarima--lstm)
   - [4.3 Modèle additionnel : Prophet](#43-modèle-additionnel--prophet)
 - [5 — IA générative et LLM](#5--ia-générative-et-llm)
-  - [5.1 Démarche et outil utilisé](#51-démarche-et-outil-utilisé)
+  - [5.1 Démarche et outils utilisés](#51-démarche-et-outils-utilisés)
   - [5.2 Hypothèses de modèles à partir des statistiques descriptives](#52-hypothèses-de-modèles-à-partir-des-statistiques-descriptives)
   - [5.3 Explication vulgarisée pour un décideur](#53-explication-vulgarisée-pour-un-décideur)
   - [5.4 Recommandations de gestion et limites](#54-recommandations-de-gestion-et-limites)
-  - [5.5 Comparaison entre nos résultats et les réponses du LLM](#55-comparaison-entre-nos-résultats-et-les-réponses-du-llm)
-  - [5.6 Audit des affirmations du LLM](#56-audit-des-affirmations-du-llm)
-  - [5.7 Apport et limites du LLM](#57-apport-et-limites-du-llm)
+  - [5.5 Comparaison entre l'interprétation du groupe et la réponse de ChatGPT](#55-comparaison-entre-linterprétation-du-groupe-et-la-réponse-de-chatgpt)
+  - [5.6 Audit des affirmations des LLM](#56-audit-des-affirmations-des-llm)
+  - [5.7 Apport et limites des LLM](#57-apport-et-limites-des-llm)
 - [6 — Prévision et évaluation comparative](#6--prévision-et-évaluation-comparative)
   - [6.1 Conclusion sur le modèle final](#61-conclusion-sur-le-modèle-final)
   - [6.2 Protocole de comparaison](#62-protocole-de-comparaison)
@@ -72,10 +72,12 @@ Mini-projet de séries temporelles — Tek-Up, 3e année Data Science et IA — 
   - [A.9 Paires significatives en perte absolue seulement](#a9-paires-significatives-en-perte-absolue-seulement)
   - [A.10 Les 45 paires du test de Diebold–Mariano](#a10-les-45-paires-du-test-de-dieboldmariano)
   - [A.11 Questions de comparaison du sujet](#a11-questions-de-comparaison-du-sujet)
-- [Annexe B — Échanges avec le LLM](#annexe-b--échanges-avec-le-llm)
-  - [B.1 Premier tour (exploratoire)](#b1-premier-tour-exploratoire)
-  - [B.2 Second tour : prompts et réponses intégrales](#b2-second-tour--prompts-et-réponses-intégrales)
-  - [B.3 Audit complet des affirmations du LLM](#b3-audit-complet-des-affirmations-du-llm)
+  - [A.12 Validation croisée temporelle d'AR-GARCH et du témoin AR](#a12-validation-croisée-temporelle-dar-garch-et-du-témoin-ar)
+- [Annexe B — Échanges avec les LLM](#annexe-b--échanges-avec-les-llm)
+  - [B.1 Essai préliminaire](#b1-essai-préliminaire)
+  - [B.2 Premier tour (Claude) : prompts et réponses intégrales](#b2-premier-tour-claude--prompts-et-réponses-intégrales)
+  - [B.3 Interprétation du groupe et second tour (ChatGPT)](#b3-interprétation-du-groupe-et-second-tour-chatgpt)
+  - [B.4 Audit complet des affirmations des LLM](#b4-audit-complet-des-affirmations-des-llm)
 
 ---
 
@@ -112,7 +114,7 @@ Les modèles de prévision produisent des prévisions à un horizon de 1 à 7 jo
 
 ## Résultat principal
 
-Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (RMSE 74,06 GWh/jour) fait aussi bien : la moyenne autorégressive avec calendrier explique l'essentiel du gain.
+Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé sur le test, à égalité avec le GRU en validation croisée ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (RMSE 74,06 GWh/jour) fait aussi bien : la moyenne autorégressive avec calendrier explique l'essentiel du gain.
 
 ## Organisation du rapport et auteurs
 
@@ -274,7 +276,7 @@ Les graphiques ACF/PACF de la section 2.3 suggèrent d = 1, D = 1, s = 7, un ter
 | `auto_arima` sans saisonnalité : ARIMA(2,1,2) | 74,23 | 59,01 |
 | Naïf « dernière valeur » | 88,59 | 67,73 |
 
-La comparaison des deux approches automatiques montre que `pmdarima` et `auto.arima` ne retrouvent pas le modèle identifié par l'ACF/PACF : leurs recherches pas à pas explorent l'espace dans un ordre différent, et aucune ne bat le SARIMA(2,1,1)(0,1,1)[7]. Le tableau complet des 15 modèles (avec AIC et BIC, à interpréter avec prudence entre différenciations différentes) figure en annexe A (tableau 29). Une faible différence de RMSE entre candidats ne démontre pas une supériorité statistique.
+La comparaison des deux approches automatiques montre que `pmdarima` et `auto.arima` ne retrouvent pas le modèle identifié par l'ACF/PACF : leurs recherches pas à pas explorent l'espace dans un ordre différent, et aucune ne bat le SARIMA(2,1,1)(0,1,1)[7]. Le tableau complet des 15 modèles (avec AIC et BIC, à interpréter avec prudence entre différenciations différentes) figure en annexe A (tableau 30). Une faible différence de RMSE entre candidats ne démontre pas une supériorité statistique.
 
 ### Diagnostic des résidus
 
@@ -300,7 +302,7 @@ L'autocorrélation résiduelle est faible en valeur absolue (pic d'environ 0,10 
 
 ### Évaluation externe
 
-Le modèle est réestimé sur les 3 506 jours d'apprentissage puis prévoit les 390 jours de test par blocs de sept jours, à paramètres fixes. Sa **RMSE vaut 82,38 GWh/jour** (MAE 53,12 GWh/jour, MAPE 4,13 %), contre 113,93 pour le naïf saisonnier, soit un gain de 27,69 % de RMSE ; la couverture empirique de l'intervalle nominal à 95 % est de 94,36 %. L'erreur croît avec l'horizon, de 33,83 GWh/jour à h = 1 à 111,38 GWh/jour à h = 7 (annexe A, tableau 30). Ce gain est descriptif : il n'est pas testé ici ; le test de Diebold–Mariano figure en section 6.
+Le modèle est réestimé sur les 3 506 jours d'apprentissage puis prévoit les 390 jours de test par blocs de sept jours, à paramètres fixes. Sa **RMSE vaut 82,38 GWh/jour** (MAE 53,12 GWh/jour, MAPE 4,13 %), contre 113,93 pour le naïf saisonnier, soit un gain de 27,69 % de RMSE ; la couverture empirique de l'intervalle nominal à 95 % est de 94,36 %. L'erreur croît avec l'horizon, de 33,83 GWh/jour à h = 1 à 111,38 GWh/jour à h = 7 (annexe A, tableau 31). Ce gain est descriptif : il n'est pas testé ici ; le test de Diebold–Mariano figure en section 6.
 
 ### Limites
 
@@ -365,7 +367,7 @@ Avec la température ordonnée en premier (un choc de consommation ne change pas
 
 Le test de Johansen (constante, deux retards en différences choisis par le BIC) rejette r ≤ 0 (statistique de la trace 337,72 contre un seuil à 95 % de 15,49) et r ≤ 1 (39,55 contre 3,84) : **le rang est 2, le rang plein**. Le résultat est identique avec 1 à 13 retards, avec constante ou tendance, et sur des séries corrigées du calendrier ; seule la spécification sans constante sur les données brutes, inadaptée (consommation moyenne de 1 254 GWh/jour), donne r = 1. Un rang plein signifie que les deux séries sont **déjà stationnaires** : il n'y a pas de tendance stochastique commune, donc pas de cointégration au sens strict, et un VAR en niveaux est la spécification cohérente.
 
-Comme le sujet demande un VECM, nous l'estimons avec r = 1 **imposé**, en signalant que ce choix n'est pas soutenu par le test. Le nombre de retards en différences est choisi parmi 2, 8 et 12 (ordres du BIC, du HQIC et de l'AIC) par la même règle de validation interne (RMSE de 55,48, 62,37 et 53,44 GWh/jour) : **VECM(k = 12, r = 1)**. La relation d'équilibre est conso + 82,08 × température = constante. La **vitesse de correction** est α = −0,0181 (p = 0,004) : environ 1,8 % de l'écart à l'équilibre est résorbé chaque jour, soit une demi-vie d'environ 38 jours. Cette valeur n'est pas robuste : selon le nombre de retards, α vaut −0,052 (demi-vie de 13 jours), +0,007 (aucune correction) ou −0,018 (annexe A, tableau 31), et β varie du simple au double (de 61,8 à 134,1). Nous ne la lisons que comme un ordre de grandeur. Les résidus du VECM présentent les mêmes défauts que ceux du VAR (Ljung-Box p ≈ 10⁻¹⁶ et ARCH-LM p ≈ 10⁻²⁶ pour la consommation).
+Comme le sujet demande un VECM, nous l'estimons avec r = 1 **imposé**, en signalant que ce choix n'est pas soutenu par le test. Le nombre de retards en différences est choisi parmi 2, 8 et 12 (ordres du BIC, du HQIC et de l'AIC) par la même règle de validation interne (RMSE de 55,48, 62,37 et 53,44 GWh/jour) : **VECM(k = 12, r = 1)**. La relation d'équilibre est conso + 82,08 × température = constante. La **vitesse de correction** est α = −0,0181 (p = 0,004) : environ 1,8 % de l'écart à l'équilibre est résorbé chaque jour, soit une demi-vie d'environ 38 jours. Cette valeur n'est pas robuste : selon le nombre de retards, α vaut −0,052 (demi-vie de 13 jours), +0,007 (aucune correction) ou −0,018 (annexe A, tableau 32), et β varie du simple au double (de 61,8 à 134,1). Nous ne la lisons que comme un ordre de grandeur. Les résidus du VECM présentent les mêmes défauts que ceux du VAR (Ljung-Box p ≈ 10⁻¹⁶ et ARCH-LM p ≈ 10⁻²⁶ pour la consommation).
 
 ### Performance sur le test externe
 
@@ -463,7 +465,7 @@ Le sujet demande le socle classique en R **et** en Python. Nous avons donc refai
 | AR-GARCH(1,2)-t : RMSE de test (GWh/jour) | 74,45 | 74,44 |
 | AR-GARCH : couverture à 95 % | 95,9 % | 95,6 % |
 
-**25 éléments sur 27 sont identiques à 0,1 % près** (annexe A, tableau 32). Les deux seuls écarts supérieurs à 0,1 % concernent le GARCH (paramètre α₁ : 0,35 % ; couverture : 0,27 %, soit un jour sur 390), dus aux optimiseurs de `rugarch` et d'`arch`. Les conclusions sont toutes identiques : le résultat ne dépend pas du logiciel.
+**25 éléments sur 27 sont identiques à 0,1 % près** (annexe A, tableau 33). Les deux seuls écarts supérieurs à 0,1 % concernent le GARCH (paramètre α₁ : 0,35 % ; couverture : 0,27 %, soit un jour sur 390), dus aux optimiseurs de `rugarch` et d'`arch`. Les conclusions sont toutes identiques : le résultat ne dépend pas du logiciel.
 
 **Différences de méthode.** `auto.arima` retient SARIMA(1,0,1)(1,1,0)[7] tandis que `pmdarima` retient SARIMA(2,1,1)(1,0,0)[7] : les recherches pas à pas n'explorent pas l'espace dans le même ordre, et aucune ne bat le modèle identifié par l'ACF/PACF (RMSE de validation de 49,77 et de 48,11 GWh/jour contre 42,68). Les statistiques de Johansen sont identiques, mais les valeurs critiques diffèrent (8,18 en R, 3,84 en Python pour r ≤ 1) car les tables ne sont pas les mêmes ; la conclusion (rang plein) est inchangée.
 
@@ -546,7 +548,7 @@ Les deux réseaux font mieux que le SARIMA en moyenne (96,54 pour le GRU et 99,6
 
 ### Résultats sur le test externe
 
-Les réseaux sont réentraînés jusqu'au 6 août 2025 avec le nombre d'époques retenu, puis prévoient les 390 jours de test (section 6, tableau 21). Le **LSTM obtient une RMSE de 75,07 GWh/jour** (MAE 50,26 GWh/jour, MAPE 3,96 %) et le **GRU de 76,40 GWh/jour** (MAE 52,40 GWh/jour, MAPE 4,16 %), contre 82,38 GWh/jour pour le SARIMA ; le gain de RMSE du LSTM sur le naïf saisonnier est de 34,1 %. Sur le test, le LSTM devance donc le GRU, alors que c'est l'inverse dans quatre plis de la validation croisée : l'écart entre les deux réseaux est trop faible pour les départager (test de Diebold–Mariano, section 6, p corrigée de 1,00). Les réseaux fournissent des prévisions ponctuelles, sans intervalle.
+Les réseaux sont réentraînés jusqu'au 6 août 2025 avec le nombre d'époques retenu, puis prévoient les 390 jours de test (section 6, tableau 22). Le **LSTM obtient une RMSE de 75,07 GWh/jour** (MAE 50,26 GWh/jour, MAPE 3,96 %) et le **GRU de 76,40 GWh/jour** (MAE 52,40 GWh/jour, MAPE 4,16 %), contre 82,38 GWh/jour pour le SARIMA ; le gain de RMSE du LSTM sur le naïf saisonnier est de 34,1 %. Sur le test, le LSTM devance donc le GRU, alors que c'est l'inverse dans quatre plis de la validation croisée : l'écart entre les deux réseaux est trop faible pour les départager (test de Diebold–Mariano, section 6, p corrigée de 1,00). Les réseaux fournissent des prévisions ponctuelles, sans intervalle.
 
 ### Limites
 
@@ -610,17 +612,17 @@ Sur le test, **Prophet obtient une RMSE de 101,79 GWh/jour** (MAE 75,06 GWh/jour
 
 # 5 — IA générative et LLM
 
-Cette section évalue l'usage d'un LLM comme outil d'aide à l'analyse, selon les quatre points du sujet : hypothèses de modèles à partir des statistiques descriptives (5.2), explication vulgarisée (5.3), recommandations de gestion avec limites explicites (5.4), comparaison avec nos résultats et recherche des erreurs du LLM (5.5 et 5.6). Les prompts et les réponses intégrales sont en annexe B.
+Cette section évalue l'usage d'un LLM comme outil d'aide à l'analyse, selon les quatre points du sujet : hypothèses de modèles à partir des statistiques descriptives (5.2), explication vulgarisée (5.3), recommandations de gestion avec limites explicites (5.4), comparaison avec une interprétation rédigée par le groupe et recherche des erreurs des LLM (5.5 et 5.6). Les prompts, les réponses intégrales et l'interprétation du groupe sont en annexe B.
 
-## 5.1 Démarche et outil utilisé
+## 5.1 Démarche et outils utilisés
 
-**LLM consulté : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026.** Trois prompts complets lui ont été soumis ; ils sont générés à partir des fichiers de résultats par `scripts/preparer_prompts_llm.py` : (a) hypothèses de modèles à partir des statistiques descriptives, (b) vulgarisation de la comparaison finale pour un décideur, (c) recommandations de gestion du réseau, avec limites formulées par le LLM. Chaque prompt demande de n'utiliser que les chiffres fournis.
+**Premier tour : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026.** Trois prompts complets lui ont été soumis ; ils sont générés à partir des fichiers de résultats par `scripts/preparer_prompts_llm.py` : (a) hypothèses de modèles à partir des statistiques descriptives, (b) vulgarisation de la comparaison finale pour un décideur, (c) recommandations de gestion du réseau, avec limites formulées par le LLM. Chaque prompt demande de n'utiliser que les chiffres fournis.
 
-Trois précisions s'imposent sur la portée de cet exercice.
+**Second tour : ChatGPT (OpenAI).** Après ce premier tour et la lecture des résultats du projet, le groupe a rédigé sa propre interprétation de la comparaison finale (annexe B), puis a soumis le prompt (b), sans le modifier, à ChatGPT.
 
-- **Le LLM n'était pas neutre vis-à-vis du projet.** Claude a aussi servi d'outil d'aide pendant la préparation du projet (code, mise en forme). Chaque réponse est rédigée à partir du seul contenu de son prompt, mais ce n'est pas la consultation d'un outil qui découvrirait le sujet.
-- **L'audit n'est pas indépendant.** La vérification de la section 5.6 a été menée avec le même outil, de façon systématique : chaque nombre cité est recherché dans le prompt par un script (`scripts/audit_reponses_llm.py`), et chaque affirmation générale est confrontée à un fichier de résultats.
-- **Un premier tour exploratoire** (9 octobre 2026, deux prompts sur le seul SARIMA, autre outil identifié dans `rapport/annexe_llm/manifest.json`) est conservé en annexe B ; il n'entre pas dans l'analyse ci-dessous.
+- **L'interprétation du groupe précède ChatGPT, pas Claude.** L'exigence du sujet (une interprétation rédigée avant de solliciter le LLM) est remplie pour le second tour ; elle ne l'est pas pour le premier, dont les réponses étaient connues du groupe au moment d'écrire.
+- **Claude n'était pas neutre, et l'audit n'est pas indépendant.** Claude a aussi servi d'outil d'aide pendant la préparation du projet (code, mise en forme), et la vérification de la section 5.6 a été menée avec lui, y compris pour la réponse de ChatGPT. Chaque verdict renvoie donc à un fichier de résultats et à une valeur recalculée par `scripts/audit_reponses_llm.py` ; les principaux écarts de la réponse de ChatGPT ont d'abord été relevés par le groupe.
+- **Un essai préliminaire** (9 octobre 2026, deux prompts sur le seul SARIMA, autre outil) est conservé en annexe B ; il n'entre pas dans l'analyse.
 
 ## 5.2 Hypothèses de modèles à partir des statistiques descriptives
 
@@ -652,7 +654,7 @@ Ces hypothèses recoupent largement la démarche du projet. Deux écarts sont à
 
 > « Deux modèles peuvent avoir des erreurs différentes sur une année simplement par hasard. Le test de Diebold–Mariano mesure si l'écart est trop grand pour être dû au hasard. […] On ne peut pas dire qu'il sera encore le meilleur l'an prochain : le test porte sur une seule période de 390 jours, et l'écart avec ses concurrents directs n'est pas démontré. »
 
-L'explication est fidèle aux chiffres et rend bien la distinction entre « meilleur observé » et « meilleur démontré ». Elle dépasse la longueur demandée (environ 400 mots) et lisse trois points : la couverture de 95,9 % est une moyenne qui masque l'hiver, « les modèles qui tiennent compte du passé récent » ne battent pas tous la persistance de façon significative, et le coût des réseaux est sous-estimé (section 5.6).
+L'explication rend bien la distinction entre « meilleur observé » et « meilleur démontré » ; une affirmation est fausse, sur les intervalles « les mieux calibrés » (section 5.6). Elle dépasse la longueur demandée (environ 400 mots) et lisse trois points : la couverture de 95,9 % est une moyenne qui masque l'hiver, « les modèles qui tiennent compte du passé récent » ne battent pas tous la persistance de façon significative, et le coût des réseaux est sous-estimé (section 5.6).
 
 ## 5.4 Recommandations de gestion et limites
 
@@ -664,45 +666,60 @@ Le prompt (c) demande des recommandations à partir des prévisions du 1er au 7 
 
 - **La marge du LLM est insuffisante en hiver.** Sur le test, la couverture d'AR-GARCH tombe à 91,11 % de décembre à février (contre 97,33 % le reste de l'année), et sa RMSE y atteint 121,62 GWh/jour (contre 52,62) ; la plus forte erreur est de 329,35 GWh le 14 janvier 2026. Une marge calée sur la borne haute serait donc dépassée environ un jour sur onze en hiver, précisément quand le réseau est tendu.
 - **La semaine prévue est une semaine facile.** Début septembre, les modèles s'accordent à moins de 35 GWh/jour près ; ces recommandations ne disent rien de leur comportement lors d'un épisode de froid, que la validation croisée montre environ quatre fois plus difficile à prévoir (section 4.1).
-- **Le choix d'AR-GARCH n'est pas démontré.** Aucun test corrigé ne le distingue de ses concurrents ; il n'a pas été soumis à la validation croisée, contrairement au SARIMA et aux réseaux.
+- **Le choix d'AR-GARCH n'est pas démontré.** Aucun test corrigé ne le distingue de ses concurrents ; en validation croisée, il fait jeu égal avec le GRU sans le devancer (annexe A).
 - **Les données de 2026 sont consolidées**, donc révisables, et les valeurs réelles de septembre ne sont pas disponibles : aucune de ces recommandations n'a pu être confrontée à la réalité.
 - **Les recommandations restent génériques** : sans capacité disponible, sans coût d'une défaillance ni prévision météo, le LLM ne peut proposer aucun seuil chiffré de marge. Elles ne constituent pas une aide à la décision d'exploitation.
 
-## 5.5 Comparaison entre nos résultats et les réponses du LLM
+## 5.5 Comparaison entre l'interprétation du groupe et la réponse de ChatGPT
 
-Le sujet demande de comparer l'explication du LLM à une interprétation experte rédigée avant de le solliciter. **Aucune interprétation personnelle n'a été rédigée avant la consultation du LLM** ; cette exigence n'est donc pas satisfaite, et nous ne la reconstituons pas après coup. La comparaison ci-dessous porte sur **les résultats calculés du projet** (sections 2 à 7) contre les réponses du LLM.
+Notre interprétation (environ 150 mots, sans chiffre) et la réponse de ChatGPT au prompt (b) (environ 470 mots) sont en annexe B. Le groupe avait lu tous les résultats ; ChatGPT n'a reçu que le tableau de test et les tests de Diebold–Mariano, sans rien sur la baisse d'après 2022.
 
-- **Convergences.** Différenciation d = 1, D = 1, s = 7 ; VAR en niveaux et absence de cointégration (rang plein de Johansen) ; loi de Student pour le GARCH (ν ≈ 4,10) ; petit réseau à une couche ; distinction entre meilleur observé et meilleur démontré ; rôle du GARCH limité aux intervalles ; rejet de Prophet à sept jours.
-- **Divergences.** Le LLM ne propose pas le modèle retenu, SARIMA(2,1,1)(0,1,1)[7] ; il part d'un GARCH(1,1), que nos diagnostics jugent insuffisant (effet ARCH résiduel, p = 4 × 10⁻⁵), tout en prévoyant de monter en ordre ; il ne peut pas voir que la saisonnalité annuelle domine.
-- **Simplifications excessives.** Neuf affirmations sur 29 sont exactes mais incomplètes (tableau 20) ; les plus importantes concernent la couverture moyenne, qui masque l'hiver, et la marge de sécurité qui en découle.
-- **Causalités non fondées.** Nous n'en relevons aucune : la seule explication causale avancée (le creux du week-end lié à la baisse d'activité) est présentée comme une hypothèse non démontrée.
+- **Convergences.** Les deux textes retiennent AR-GARCH sans le dire démontré meilleur, limitent le rôle du GARCH à la mesure de l'incertitude et rappellent qu'il n'y a qu'une année de test. Cela prouve peu : ces idées se lisaient dans le prompt et dans les réponses de Claude.
+- **Divergences.** *La saison* : pour le groupe, « tout se joue en hiver » ; pour ChatGPT, « la plupart des jours, la prévision est juste à environ 4 % près ». Les fichiers donnent raison au groupe : 65,4 % des jours du test sont prévus à 4 % près, mais 47,8 % en hiver, et les 90 jours d'hiver portent 61,6 % de l'erreur quadratique. *La météo* : le groupe écrit « sans prévisions météo », ChatGPT « aucun modèle n'utilise la météo », ce qui est faux. *Les réseaux* : ChatGPT juge que les modèles classiques font « au moins aussi bien », alors que la validation croisée penche pour les réseaux (section 4.1) ; le groupe ne les classe pas.
+- **Ce que ChatGPT apporte et que notre texte n'a pas.** Des chiffres, la correction des comparaisons multiples et une réserve juste : « une fourchette très large couvre facilement », et le prompt ne donnait pas les largeurs (300 GWh/jour en moyenne pour AR-GARCH, 347 pour le SARIMA).
+- **Simplifications, erreurs et causalités.** ChatGPT simplifie cinq fois, se trompe deux fois et généralise abusivement deux fois (tableau 21). Il n'avance aucune explication causale : c'est notre texte qui en contient.
 
-## 5.6 Audit des affirmations du LLM
+**Limites de notre propre interprétation.**
 
-Nous avons relevé 29 affirmations chiffrées ou causales dans les trois réponses et confronté chacune à un fichier du projet (audit complet en annexe B et dans `rapport/annexe_llm/audit_gabarit.csv`). **Résultat : 20 affirmations correctes, 9 simplifiées, aucune fausse, aucune causalité non fondée.** Sur les 170 nombres cités, 156 figurent dans le prompt ; les 14 autres sont des seuils usuels, des ordres de modèle ou des valeurs que le LLM calcule et signale comme telles (toutes recalculées et exactes).
+- **Des causes non testées.** « (habitudes, prix, industrie) » est une hypothèse : la section 7.1 mesure une baisse de niveau d'environ 98 GWh/jour sans séparer ces causes. « Sans prévisions météo, les modèles se font surprendre par chaque vague de froid » est plausible, non testé et incomplet : sur les douze plus fortes erreurs d'AR-GARCH, sept sont des surestimations un jour de redoux (11,7 °C en moyenne), cinq des sous-estimations par temps froid (1,5 °C).
+- **Des formules plus fortes que les résultats.** « La sensibilité au froid est restée la même » : le test ne détecte pas de changement de pente (p = 0,756), ce qui ne démontre pas l'égalité. « Ses intervalles sont les plus fiables » : AR-GARCH est le seul à atteindre 95 % et tient le mieux en hiver (91,1 % contre 86,7 % pour le SARIMA), mais le SARIMA est plus proche de 95 % sur l'ensemble du test ; les deux LLM font la même erreur.
+- **Une portée surestimée.** Quand ce texte a été écrit, les plis de validation croisée ne portaient pas encore sur AR-GARCH, et il ne cite aucun chiffre.
 
-**Tableau 20 — Affirmations du LLM jugées simplifiées.** Aucune affirmation n'est fausse, mais neuf sont incomplètes ; les plus lourdes de conséquences portent sur la couverture en hiver.
+## 5.6 Audit des affirmations des LLM
+
+Nous avons relevé 52 affirmations chiffrées ou causales, 32 dans les trois réponses de Claude (dont 10 pour le prompt b) et 20 dans celle de ChatGPT, et confronté chacune à un fichier du projet (audit complet en annexe B).
+
+**Tableau 20 — Bilan de l'audit par outil.** Les deux outils commettent les deux mêmes erreurs ; ChatGPT ajoute deux généralisations abusives.
 
 
-| Réponse | Affirmation du LLM | Fichier de vérification | Correction |
+| LLM | Affirmations | Correctes | Simplifiées | Fausses | Généralisations abusives | Causalités non fondées |
+|---|---|---|---|---|---|---|
+| Claude, prompts (a), (b) et (c) | 32 | 20 | 10 | 2 | 0 | 0 |
+| ChatGPT, prompt (b) | 20 | 11 | 5 | 2 | 2 | 0 |
+
+Sur les nombres cités, 156 des 170 de Claude et 25 des 28 de ChatGPT figurent dans le prompt ; les autres sont des seuils, des ordres de modèle, des arrondis ou des calculs exacts. **Deux erreurs de Claude avaient échappé au premier audit**, qui portait sur 29 affirmations et n'en jugeait aucune fausse : elles sont apparues en appliquant à ses réponses les contrôles faits pour ChatGPT.
+
+**Tableau 21 — Affirmations fausses, généralisées ou simplifiées les plus importantes.** Aucune de ces erreurs ne porte sur un chiffre inventé.
+
+
+| LLM (prompt) | Affirmation | Verdict | Correction |
 |---|---|---|---|
-| a | La baisse de variance après Δ7 signale une structure hebdomadaire forte | `02_eda.ipynb` | Force saisonnière hebdomadaire de 0,45 contre 0,90 pour le cycle annuel |
-| a | Trois candidats SARIMA proposés | `exports/comparaison_validation_complete.csv` | Le modèle retenu, SARIMA(2,1,1)(0,1,1)[7], n'est pas proposé |
-| a | L'asymétrie suggère une variable externe explicative | `02_eda.ipynb` | Le lien avec la température (−0,83) vient de l'analyse exploratoire, pas de l'asymétrie |
-| b | AR-GARCH n'est distingué d'aucun concurrent direct | `exports/lstm_gru/diebold_mariano_toutes_paires.csv` | En perte absolue, le VECM est à la limite du seuil (0,053) |
-| b | Les modèles à mémoire battent nettement la persistance | `exports/audit_llm_verifications.csv` | Vrai pour six modèles sur huit ; pas pour le VECM (0,230) ni Prophet (1,000) |
-| b | AR-GARCH atteint la couverture annoncée (95,9 %) | `exports/audit_llm_verifications.csv` | 91,11 % en hiver contre 97,33 % le reste de l'année |
-| b | Tous les temps de calcul sont faibles | `exports/complexite_modeles.csv` | Temps à multiplier par 5 pour les réseaux et par 56 pour Prophet |
-| c | AR-GARCH est le seul modèle avec intervalle | `exports/previsions_7j.csv` | Vrai dans le prompt ; quatre autres modèles en fournissent (annexe A) |
-| c | Marge sur la borne haute, un jour sur vingt en dehors | `exports/audit_llm_verifications.csv` | Environ un jour sur onze en dehors en hiver |
+| ChatGPT (b), Claude (b) | Couverture d'AR-GARCH « la plus proche » de 95 %, intervalles « les mieux calibrés » | fausse | SARIMA : 94,36 %, à 0,64 point de 95 % ; AR-GARCH : 95,90 %, à 0,90 point |
+| ChatGPT (b), Claude (c) | « Aucun modèle n'utilise la météo » | fausse | Le prompt disait « aucune prévision météo » ; le VAR et le VECM utilisent la température observée |
+| ChatGPT (b) | Les modèles classiques font « au moins aussi bien » que les réseaux | généralisation abusive | Vrai pour AR-GARCH seul : VAR, SARIMA et VECM (78,96 à 87,56) sont derrière le LSTM (75,07) et le GRU (76,40) |
+| ChatGPT (b) | Ils « battent nettement » les règles naïves et Prophet | généralisation abusive | 4 comparaisons sur 12 significatives après Holm en perte quadratique, aucune contre le naïf saisonnier |
+| ChatGPT (b), Claude (b) | Temps de calcul faibles (« moins de 16 secondes ») | simplifiée | Vrai par ajustement ; 38,7 s (LSTM), 75,9 s (GRU) et 99,6 s (Prophet) pour le protocole |
+| ChatGPT (b) | RMSE d'environ 5,9 % de la consommation moyenne ; « un jour ordinaire, l'écart typique est de 49 GWh » | simplifiée | 6,15 % de la moyenne du test (le prompt imposait celle de l'apprentissage) ; 49 GWh est la MAE, l'erreur médiane est de 29,88 GWh/jour |
 
-**Lecture critique de ce résultat.** L'absence d'erreur chiffrée ne prouve pas la fiabilité du LLM en général : tous les chiffres étaient fournis dans le prompt, avec la consigne de n'en citer aucun autre. Les faiblesses observées sont d'une autre nature : le LLM généralise une moyenne (couverture, coût), ne peut pas voir ce qui n'est pas dans le prompt (saisonnalité annuelle, dégradation hivernale) et reste général quand la décision demande un seuil.
+**Lecture critique.** Aucun chiffre n'est inventé : les erreurs viennent de la lecture des chiffres du prompt (comparer deux écarts à 95 %, reprendre « prévision météo » en « météo », étendre à une famille de modèles un résultat donné pour un seul). Les deux bilans ne se comparent pas terme à terme : trois prompts contre un, une seule réponse par outil, un découpage plus fin pour ChatGPT.
 
-## 5.7 Apport et limites du LLM
+## 5.7 Apport et limites des LLM
 
-**Ce qu'il a apporté.** Un cadrage rapide et structuré : en une réponse, la liste des familles de modèles à tester, avec pour chacune le diagnostic à faire, recoupe la démarche du projet. Une vulgarisation claire de notions difficiles à transmettre (erreur quadratique, intervalle à 95 %, différence non significative). Des limites formulées spontanément et justes (un seul test, accord entre modèles qui n'est pas une mesure de fiabilité). Nous n'avons pas mesuré le temps gagné.
+**Ce qu'ils ont apporté.** Un cadrage rapide (familles de modèles à tester et diagnostics à faire, qui recoupent la démarche du projet), une vulgarisation claire de notions difficiles (erreur quadratique, intervalle à 95 %, différence non significative) et des limites justes, formulées spontanément. Nous n'avons pas mesuré le temps gagné.
 
-**Ce qu'il n'a pas su faire.** Trouver le modèle retenu, qui exigeait l'ACF, la PACF et une validation. Voir ce que les statistiques transmises ne contenaient pas : la saisonnalité annuelle dominante, les ruptures de 2020 et 2022, la dégradation des intervalles en hiver. Chiffrer une marge de sécurité. Vérifier ses propres affirmations : tout le contrôle repose sur les fichiers du projet. Il ne remplace donc ni les calculs, ni les diagnostics, ni la relecture critique de chaque chiffre.
+**Ce qu'ils n'ont pas su faire.** Trouver le modèle retenu, qui exigeait l'ACF, la PACF et une validation. Voir ce que les chiffres transmis ne contenaient pas : saisonnalité annuelle dominante, ruptures de 2020 et 2022, dégradation des intervalles en hiver. Chiffrer une marge de sécurité. Vérifier leurs propres affirmations.
+
+**Ce que montre la comparaison des deux outils.** Sur le même prompt, ChatGPT respecte mieux la longueur demandée (environ 470 mots contre 580) et formule une réserve que Claude n'a pas, mais il généralise davantage. Les deux commettent la même erreur sur la couverture : l'accord de deux LLM ne vaut pas vérification. Le second outil a surtout servi de révélateur : c'est en auditant ChatGPT que nous avons retrouvé deux erreurs de Claude, manquées par un audit mené avec Claude lui-même. Écrire notre interprétation avant de lire ChatGPT nous a montré ce qu'il ne pouvait pas voir (l'hiver), et sa réponse chiffrée a fait ressortir nos affirmations non testées. Aucun des deux ne remplace les calculs, les diagnostics ni la relecture critique de chaque chiffre.
 
 
 # 6 — Prévision et évaluation comparative
@@ -711,7 +728,7 @@ Cette section compare les dix modèles sur le test externe (notebook `07_lstm_gr
 
 ## 6.1 Conclusion sur le modèle final
 
-Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (AR sur les retards 1, 2, 7, 8 et 14, même calendrier, sans GARCH) obtient une RMSE de **74,06 GWh/jour**, légèrement meilleure : le gain vient de la moyenne autorégressive avec calendrier, non de la modélisation de la variance, qui améliore en revanche la couverture des intervalles (95,9 % contre 93,3 %).
+Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé sur le test, à égalité avec le GRU en validation croisée ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (AR sur les retards 1, 2, 7, 8 et 14, même calendrier, sans GARCH) obtient une RMSE de **74,06 GWh/jour**, légèrement meilleure : le gain vient de la moyenne autorégressive avec calendrier, non de la modélisation de la variance, qui améliore en revanche la couverture des intervalles (95,9 % contre 93,3 %), sans les rendre assez larges en hiver (section 6.6).
 
 ## 6.2 Protocole de comparaison
 
@@ -725,7 +742,7 @@ Tous les modèles prévoient **les mêmes 390 jours** (du 7 août 2025 au 31 ao�
 
 ## 6.3 Tableau récapitulatif des modèles
 
-**Tableau 21 — Comparaison des modèles sur le test externe (390 jours).** AR-GARCH a la plus petite erreur et la meilleure couverture ; les réseaux sont juste derrière mais plus coûteux et opaques ; Prophet et les naïfs sont nettement en retrait.
+**Tableau 22 — Comparaison des modèles sur le test externe (390 jours).** AR-GARCH a la plus petite erreur et la seule couverture qui atteint 95 % sur ce test ; les réseaux sont juste derrière mais plus coûteux et opaques ; Prophet et les naïfs sont nettement en retrait.
 
 
 | Modèle | MSE | RMSE | MAE | MAPE (%) | Couverture à 95 % | Paramètres | Temps d'un ajustement (s) | Interprétabilité |
@@ -753,13 +770,13 @@ Les erreurs (MSE en (GWh/jour)², autres en GWh/jour) sont calculées sur les 39
 *Figure 13 — RMSE selon l'horizon de prévision.* À l'horizon 1, les modèles dynamiques sont à égalité ; l'erreur croît ensuite, et l'avantage d'AR-GARCH apparaît aux horizons les plus longs.
 
 
-À l'horizon 1, les modèles dynamiques (réseaux, VAR, SARIMA, VECM, persistance) sont à égalité, avec une RMSE de 32 à 38 GWh/jour : la persistance de la consommation suffit. L'erreur croît ensuite jusqu'à 96–111 GWh/jour à l'horizon 7 ; Prophet, sans mémoire à court terme, est mauvais dès l'horizon 1 (99,63 GWh/jour). Le détail est en annexe A (tableau 35).
+À l'horizon 1, les modèles dynamiques (réseaux, VAR, SARIMA, VECM, persistance) sont à égalité, avec une RMSE de 32 à 38 GWh/jour : la persistance de la consommation suffit. L'erreur croît ensuite jusqu'à 96–111 GWh/jour à l'horizon 7 ; Prophet, sans mémoire à court terme, est mauvais dès l'horizon 1 (99,63 GWh/jour). Le détail est en annexe A (tableau 36).
 
 ## 6.4 Prévisions du 1er au 7 septembre 2026
 
 Chaque modèle est réestimé sur toutes les observations jusqu'au 31 août 2026 et prévoit les sept jours suivants (horizon h = 7) ; ces prévisions ne concernent pas octobre. Les valeurs réelles de septembre ne figurent pas dans `data/daily.csv` : aucune erreur ne peut donc être calculée.
 
-**Tableau 22 — Prévisions de consommation du 1er au 7 septembre 2026 (GWh/jour).** Les huit modèles s'accordent à moins de 35 GWh/jour près chaque jour ; tous reproduisent le creux du week-end (5 et 6 septembre).
+**Tableau 23 — Prévisions de consommation du 1er au 7 septembre 2026 (GWh/jour).** Les huit modèles s'accordent à moins de 35 GWh/jour près chaque jour ; tous reproduisent le creux du week-end (5 et 6 septembre).
 
 
 | Date | SARIMA | SARIMA + LSTM | LSTM | GRU | AR-GARCH | VAR(3) | VECM | Prophet |
@@ -777,7 +794,7 @@ Chaque modèle est réestimé sur toutes les observations jusqu'au 31 août 2026
 *Figure 14 — Prévisions du 1er au 7 septembre 2026.* Les prévisions des huit modèles forment un faisceau étroit autour du profil hebdomadaire attendu.
 
 
-Les **intervalles de prévision à 95 %** des modèles qui en fournissent (SARIMA, VAR, VECM, AR-GARCH, Prophet) figurent en annexe A (tableau 36) ; les réseaux et l'hybride ne donnent que des prévisions ponctuelles. Les intervalles sont nominaux : ils sont gaussiens (sauf AR-GARCH, de loi de Student) et ignorent l'incertitude sur les paramètres.
+Les **intervalles de prévision à 95 %** des modèles qui en fournissent (SARIMA, VAR, VECM, AR-GARCH, Prophet) figurent en annexe A (tableau 37) ; les réseaux et l'hybride ne donnent que des prévisions ponctuelles. Les intervalles sont nominaux : ils sont gaussiens (sauf AR-GARCH, de loi de Student) et ignorent l'incertitude sur les paramètres.
 
 ## 6.5 Significativité des écarts : test de Diebold–Mariano
 
@@ -785,7 +802,7 @@ Une RMSE plus faible sur la période observée ne démontre pas une meilleure pr
 
 **L'étiquette « non significatif » porte sur la perte quadratique** : les conclusions formelles du notebook utilisent cette perte et les p-values corrigées ; la perte absolue est un complément exploratoire. Le nombre de rejets à 5 % sur les 45 paires dépend de la perte (p corrigées : 7 en perte quadratique, 17 en perte absolue ; p brutes : 23 et 24).
 
-**Tableau 23 — AR-GARCH contre chacun des autres modèles (Diebold–Mariano).** Après correction de Holm, AR-GARCH n'est distingué ni de SARIMA, ni de LSTM, GRU, VAR(3) ou de l'hybride ; il l'est de Prophet et de la persistance, et du naïf saisonnier en perte absolue seulement.
+**Tableau 24 — AR-GARCH contre chacun des autres modèles (Diebold–Mariano).** Après correction de Holm, AR-GARCH n'est distingué ni de SARIMA, ni de LSTM, GRU, VAR(3) ou de l'hybride ; il l'est de Prophet et de la persistance, et du naïf saisonnier en perte absolue seulement.
 
 
 | Modèle comparé | p brute, perte quadratique | p corrigée, perte quadratique | p corrigée, perte absolue |
@@ -800,26 +817,26 @@ Une RMSE plus faible sur la période observée ne démontre pas une meilleure pr
 | Persistance | < 0,001 | < 0,001 | < 0,001 |
 | Naïf saisonnier | 0,004 | 0,157 | 0,0005 |
 
-**Cas où la perte absolue donne une conclusion différente.** Dix paires sont significatives après Holm en perte absolue seulement (annexe A, tableau 37) : toutes opposent un modèle dynamique au naïf saisonnier (AR-GARCH, SARIMA, LSTM, GRU, hybride, VAR(3) : p corrigées de 0,0005 à 0,040 en perte absolue contre 0,157 à 0,391 en perte quadratique), à Prophet (LSTM, SARIMA, VAR(3)) ou, pour le VECM, à la persistance. Les différences entre modèles dynamiques ne ressortent dans aucun cas. Les 45 paires figurent en annexe A (tableau 38). La correction de Holm sur 45 paires est très prudente : elle réduit fortement la puissance, et une différence non significative ne démontre pas l'équivalence des modèles.
+**Cas où la perte absolue donne une conclusion différente.** Dix paires sont significatives après Holm en perte absolue seulement (annexe A, tableau 38) : toutes opposent un modèle dynamique au naïf saisonnier (AR-GARCH, SARIMA, LSTM, GRU, hybride, VAR(3) : p corrigées de 0,0005 à 0,040 en perte absolue contre 0,157 à 0,391 en perte quadratique), à Prophet (LSTM, SARIMA, VAR(3)) ou, pour le VECM, à la persistance. Les différences entre modèles dynamiques ne ressortent dans aucun cas. Les 45 paires figurent en annexe A (tableau 39). La correction de Holm sur 45 paires est très prudente : elle réduit fortement la puissance, et une différence non significative ne démontre pas l'équivalence des modèles.
 
-Les comparaisons demandées par le sujet (LSTM contre GRU, meilleur réseau contre SARIMA et contre le naïf saisonnier, hybride contre SARIMA, VAR(3) contre SARIMA) ne sont pas significatives en perte quadratique après correction ; en perte absolue, seule la comparaison du meilleur réseau au naïf saisonnier l'est (p corrigée de 0,008 ; annexe A, tableau 39).
+Les comparaisons demandées par le sujet (LSTM contre GRU, meilleur réseau contre SARIMA et contre le naïf saisonnier, hybride contre SARIMA, VAR(3) contre SARIMA) ne sont pas significatives en perte quadratique après correction ; en perte absolue, seule la comparaison du meilleur réseau au naïf saisonnier l'est (p corrigée de 0,008 ; annexe A, tableau 40).
 
 ## 6.6 Quel modèle pour quel usage ?
 
 Pour un **gestionnaire de réseau** qui doit anticiper la consommation à sept jours, la performance brute ne départage pas les cinq meilleurs modèles (écarts de RMSE de 74,45 à 82,38 GWh/jour, non significatifs après correction). Le choix repose donc sur les autres critères.
 
-**Tableau 24 — Choix du modèle selon le cas d'usage.** AR-GARCH offre le meilleur compromis ; le GRU et le LSTM sont les meilleurs challengers, au prix de l'interprétabilité et sans intervalles.
+**Tableau 25 — Choix du modèle selon le cas d'usage.** AR-GARCH reste recommandé, malgré des intervalles trop étroits en hiver ; le GRU et le LSTM sont les meilleurs challengers, au prix de l'interprétabilité et sans intervalles.
 
 
 | Critère | AR-GARCH(1,2)-t | SARIMA | VAR(3) | LSTM / GRU | Prophet |
 |---|---|---|---|---|---|
 | Précision (RMSE de test) | meilleure (74,45) | 82,38 | 78,96 | 75,07 / 76,40 | 101,79 |
-| Intervalles de prévision | les mieux calibrés (95,9 %) | 94,4 % | 93,1 % | aucun | 88,5 % (trop étroits) |
+| Couverture des intervalles à 95 % sur le test | 95,9 % (86,9 % sur les plis d'hiver de la validation croisée) | 94,4 % | 93,1 % | aucun | 88,5 % (trop étroits) |
 | Interprétabilité | élevée | élevée | élevée | faible | élevée |
 | Coût d'un ajustement | 0,10 s | 2,08 s | 0,02 s | 7,73 s / 15,18 s, × 5 graines | 1,78 s × 56 |
-| RMSE moyenne des plis d'hiver de la validation croisée (GWh/jour) | non mesurée | 154,97 | non mesurée | 141,46 / 138,80 | non mesurée |
+| RMSE moyenne de la validation croisée : cinq plis (plis d'hiver) | 96,74 (136,65) | 107,89 (154,97) | non mesurée | 99,62 / 96,54 (141,46 / 138,80) | non mesurée |
 
-**Notre recommandation** est de retenir un modèle de type **AR-GARCH(1,2)-t** comme modèle opérationnel : c'est le meilleur observé, ses intervalles sont les mieux calibrés (utile pour dimensionner une marge de sécurité), il est interprétable et son coût est négligeable. Le **SARIMA** reste la référence statistique justifiée par la règle de validation, et le **GRU ou le LSTM** le meilleur challenger : ils battent le SARIMA dans la quasi-totalité des plis de la validation croisée, surtout en hiver, mais sans intervalles, sans interprétation et pour un coût plus élevé. Combiner les prévisions (par exemple moyenne d'AR-GARCH et d'un réseau) est une piste naturelle, non évaluée ici. **Prophet n'est pas adapté** à la prévision à sept jours. Cette recommandation reste conditionnelle : un seul hiver de test, des écarts non significatifs, et aucune validation croisée d'AR-GARCH.
+**Notre recommandation** est de retenir un modèle de type **AR-GARCH(1,2)-t** comme modèle opérationnel : il est le meilleur observé sur le test, à égalité avec le GRU en validation croisée (RMSE moyenne de 96,74 contre 96,54 GWh/jour ; annexe A, tableau 41), interprétable, quasi instantané, et le seul de ces deux modèles à fournir des intervalles. **Ces intervalles sont toutefois trop étroits en hiver** : leur couverture, de 95,9 % sur le test, n'est que de 86,9 % sur les plis d'hiver de la validation croisée et de 67,9 % pendant l'hiver 2022-23. En exploitation, il faudrait les élargir en hiver ou modéliser une variance saisonnière. Le **SARIMA** reste la référence statistique justifiée par la règle de validation, et le **GRU ou le LSTM** le meilleur challenger : ils battent le SARIMA dans la quasi-totalité des plis de la validation croisée, surtout en hiver, mais sans intervalles, sans interprétation et pour un coût plus élevé. Combiner les prévisions (par exemple moyenne d'AR-GARCH et d'un réseau) est une piste naturelle, non évaluée ici. **Prophet n'est pas adapté** à la prévision à sept jours. Cette recommandation reste conditionnelle : un seul hiver de test, des écarts non significatifs, et une validation croisée où AR-GARCH n'est le meilleur dans aucun pli.
 
 
 # 7 — Extensions
@@ -837,10 +854,10 @@ Cette extension, implémentée en R (`06_section3_R.ipynb`), étudie si le lien 
 
 - **Le lien dépend de la saison.** Sur 90 jours, la corrélation reste autour de −0,90 d'octobre à juin et devient positive chaque fin d'été, jusqu'à +0,69. C'est la courbe en U de la section 2.6 vue dans le temps. Sur 30 jours, les bascules sont plus brutales (de −0,98 à +0,97) : la fenêtre est courte et sensible à une seule vague de chaleur ou de froid.
 - **Sur 365 jours**, le lien reste fort (de −0,93 à −0,77), avec deux affaiblissements : 2020 (le confinement réduit la consommation sans lien avec la météo) et 2026 (l'été 2026 est le plus chaud de la série : 260 degrés-jours de climatisation de juin à août, contre 137 au précédent maximum, en 2022).
-- **Le lien n'est pas une coïncidence de calendrier** : une fois l'effet du calendrier retiré (jusqu'à −301 GWh/jour pour un dimanche férié par rapport à un mardi), la corrélation sur toute la période passe de −0,83 à −0,86 ; elle garde la même forme saisonnière sur les variations journalières (annexe A, tableau 33).
-- **D'un hiver à l'autre**, la corrélation d'hiver est stable (de −0,88 à −0,95), sauf en 2019-2020 (−0,68), qui inclut le début du confinement, et la pente reste comprise entre −40,2 et −56,5 GWh/jour par °C sans tendance (annexe A, tableau 34). En revanche, la consommation estimée à 8 °C passe de 1 513–1 575 GWh/jour (hivers 2016-17 à 2019-20) à 1 424–1 469 GWh/jour depuis l'hiver 2022-23.
+- **Le lien n'est pas une coïncidence de calendrier** : une fois l'effet du calendrier retiré (jusqu'à −301 GWh/jour pour un dimanche férié par rapport à un mardi), la corrélation sur toute la période passe de −0,83 à −0,86 ; elle garde la même forme saisonnière sur les variations journalières (annexe A, tableau 34).
+- **D'un hiver à l'autre**, la corrélation d'hiver est stable (de −0,88 à −0,95), sauf en 2019-2020 (−0,68), qui inclut le début du confinement, et la pente reste comprise entre −40,2 et −56,5 GWh/jour par °C sans tendance (annexe A, tableau 35). En revanche, la consommation estimée à 8 °C passe de 1 513–1 575 GWh/jour (hivers 2016-17 à 2019-20) à 1 424–1 469 GWh/jour depuis l'hiver 2022-23.
 
-**Tableau 25 — Effet de la sobriété sur la sensibilité au froid.** À température égale, la consommation d'hiver a baissé d'environ 98 GWh/jour depuis octobre 2022, sans changement significatif de pente (p = 0,756).
+**Tableau 26 — Effet de la sobriété sur la sensibilité au froid.** À température égale, la consommation d'hiver a baissé d'environ 98 GWh/jour depuis octobre 2022, sans changement significatif de pente (p = 0,756).
 
 
 | Terme de la régression d'hiver | Estimation (GWh/jour) | Écart-type | p-value |
@@ -860,7 +877,7 @@ Cette analyse (`03_contrefactuels.ipynb`) répond à la question : combien d'é
 
 Le modèle est une régression linéaire (moindres carrés) de la consommation journalière sur 20 variables explicatives et une constante : degrés-jours de chauffage `hdd`, `hdd` lissé sur 3 jours (inertie thermique des bâtiments), `cdd` ; jour de la semaine (6 indicatrices), jour férié, période de Noël et 1–20 août ; quatre paires de termes de Fourier annuels. Aucune tendance n'est ajoutée : elle dégrade la validation (extrapolation risquée). Ce modèle est **indépendant des modèles de prévision** ; pour ne pas toucher à la période de test, l'analyse de la sobriété s'arrête à l'hiver 2024-25.
 
-**Tableau 26 — Validation du modèle contrefactuel en période sans choc.** Le modèle prédit une année inconnue avec une erreur de 2,6 %, mais il « détecte » à tort un écart d'environ −1,1 % sur un hiver sans choc : c'est son biais.
+**Tableau 27 — Validation du modèle contrefactuel en période sans choc.** Le modèle prédit une année inconnue avec une erreur de 2,6 %, mais il « détecte » à tort un écart d'environ −1,1 % sur un hiver sans choc : c'est son biais.
 
 
 | Test | Erreur moyenne (MAPE) | Biais | R² d'apprentissage |
@@ -872,7 +889,7 @@ Ce **biais en période normale**, que nous attribuons à un léger recul tendanc
 
 ### Résultats
 
-**Tableau 27 — Effet du premier confinement.** Le premier confinement a réduit la consommation d'environ 8,06 TWh (−12,2 %) ; sur la fenêtre de l'INSEE, −13,48 % contre −14 % publié.
+**Tableau 28 — Effet du premier confinement.** Le premier confinement a réduit la consommation d'environ 8,06 TWh (−12,2 %) ; sur la fenêtre de l'INSEE, −13,48 % contre −14 % publié.
 
 
 | Fenêtre | Réel (TWh) | Contrefactuel (TWh) | Écart (TWh) | Écart (%) |
@@ -887,7 +904,7 @@ Le modèle est appris du 1er janvier 2016 au 29 février 2020, avant toute mesur
 *Figure 16 — Contrefactuel du premier confinement.* La consommation observée passe sous le contrefactuel dès la mi-mars 2020, avec un écart maximal fin mars, puis l'écart se résorbe.
 
 
-**Tableau 28 — Effet de la crise énergétique et de la sobriété.** La baisse est de 8,27 % en 2022-23 et ne disparaît pas ensuite (7,19 % puis 6,57 %), ce qui suggère une part structurelle.
+**Tableau 29 — Effet de la crise énergétique et de la sobriété.** La baisse est de 8,27 % en 2022-23 et ne disparaît pas ensuite (7,19 % puis 6,57 %), ce qui suggère une part structurelle.
 
 
 | Hiver | Réel (TWh) | Contrefactuel (TWh) | Écart (TWh) | Écart (%) |
@@ -896,7 +913,7 @@ Le modèle est appris du 1er janvier 2016 au 29 février 2020, avant toute mesur
 | 2023-24 | 244,42 | 263,36 | −18,95 | −7,19 |
 | 2024-25 | 252,26 | 269,99 | −17,74 | −6,57 |
 
-Le modèle est appris sur 2016-2019 uniquement (comportement d'avant les crises, COVID exclu). À météo et calendrier égaux, la consommation de l'hiver 2022-23 est inférieure de 8,27 % (environ 22 TWh) à celle qu'aurait produite le comportement de 2016-2019 ; le notebook cite une estimation de RTE d'« environ 9 % » par rapport à 2014-2019 (non revérifiée ici), cohérente malgré des périodes de référence proches mais non identiques. Le décrochage commence en septembre-octobre 2022 et culmine en novembre 2022 (−10,4 % d'après le notebook). **La baisse ne disparaît pas** (−7,19 % en 2023-24, −6,57 % en 2024-25) : une partie de la sobriété semble devenue structurelle (habitudes, équipements, industrie électro-intensive), hypothèse que ce modèle ne permet pas de démontrer. La régression d'hiver du tableau 25, obtenue par une autre méthode, va dans le même sens. Avant la crise (2021-22), les écarts restent entre 0 et −4 %, ce qui borne l'incertitude de la mesure.
+Le modèle est appris sur 2016-2019 uniquement (comportement d'avant les crises, COVID exclu). À météo et calendrier égaux, la consommation de l'hiver 2022-23 est inférieure de 8,27 % (environ 22 TWh) à celle qu'aurait produite le comportement de 2016-2019 ; le notebook cite une estimation de RTE d'« environ 9 % » par rapport à 2014-2019 (non revérifiée ici), cohérente malgré des périodes de référence proches mais non identiques. Le décrochage commence en septembre-octobre 2022 et culmine en novembre 2022 (−10,4 % d'après le notebook). **La baisse ne disparaît pas** (−7,19 % en 2023-24, −6,57 % en 2024-25) : une partie de la sobriété semble devenue structurelle (habitudes, équipements, industrie électro-intensive), hypothèse que ce modèle ne permet pas de démontrer. La régression d'hiver du tableau 26, obtenue par une autre méthode, va dans le même sens. Avant la crise (2021-22), les écarts restent entre 0 et −4 %, ce qui borne l'incertitude de la mesure.
 
 ![Figure 17 — Écart mensuel entre consommation réelle et contrefactuel](../figures/contrefactuel_sobriete.png)
 
@@ -913,7 +930,7 @@ Le biais d'environ −1 % pourrait surestimer les effets. Les résidus de la r
 ## 8.1 Ce que les résultats montrent
 
 1. **Le calendrier compte probablement autant que le choix du modèle.** Les modèles des sections 3.2 à 4.3 utilisent le jour férié et un cycle annuel que le SARIMA n'a pas. Le témoin (AR avec calendrier, sans GARCH, RMSE 74,06 GWh/jour) fait aussi bien que le meilleur modèle : une part importante du gain vient vraisemblablement de l'information de calendrier et d'une moyenne bien choisie (retards 1, 2, 7, 8 et 14), plutôt que de la sophistication du modèle. Nous n'avons pas isolé cet effet par une expérience dédiée (par exemple un SARIMA avec les mêmes régresseurs) : c'est une hypothèse, pas un résultat.
-2. **Le GARCH sert à quantifier l'incertitude, pas à prévoir la moyenne.** Il améliore la couverture des intervalles (95,9 % contre 93,3 %), mais pas la RMSE. Son lien avec les événements connus est partiel (section 3.3).
+2. **Le GARCH sert à quantifier l'incertitude, pas à prévoir la moyenne.** Il améliore la couverture (95,9 % contre 93,3 %) d'intervalles qui restent trop étroits en hiver, pas la RMSE. Son lien avec les événements connus est partiel (section 3.3).
 3. **La température explique beaucoup la consommation (Granger, réponse impulsionnelle), mais le VAR(3) prévoit moins bien (78,96 GWh/jour) que l'AR creux avec calendrier (74,06).** Deux explications possibles, non départagées : sans météo future, la température prévue par le VAR apporte peu à sept jours ; et le VAR(3) n'a pas les retards hebdomadaires 7 et 8.
 4. **Les réseaux de neurones sont compétitifs sans être meilleurs de façon établie.** Le LSTM (75,07) et le GRU (76,40) se classent juste derrière AR-GARCH sur le test, et battent le SARIMA dans la quasi-totalité des plis de la validation croisée, mais aucune différence n'est significative après correction de Holm. Le calendrier est ce qui les améliore le plus en validation (39,37 contre 46,55 GWh/jour pour le LSTM).
 5. **L'hybride apporte un gain faible et ambigu** (RMSE −3,0 % par rapport au SARIMA, MAE et MAPE en légère hausse, différence non significative).
@@ -923,13 +940,13 @@ Le biais d'environ −1 % pourrait surestimer les effets. Les résidus de la r
 
 ## 8.2 Pourquoi les sensibilités à la température diffèrent
 
-Le rapport cite quatre sensibilités de la consommation à la température : environ **−56 GWh/jour par °C** (section 2.6, pente sous 15 °C), **−48 GWh/jour par °C** (section 7.1, pente d'hiver avant la sobriété), **−24 GWh/jour par °C** (section 3.2, réponse impulsionnelle du VAR) et **−82 GWh/jour par °C** (section 3.2, relation de long terme du VECM). Elles ne mesurent pas la même chose : les deux premières sont des pentes observées par temps froid, sur des échantillons différents (jours sous 15 °C sur toute la période pour −56, jours d'hiver pour −48) ; la réponse impulsionnelle est un effet moyen sur toute l'année, été sans chauffage compris, ce qui l'atténue ; la relation du VECM est imposée avec un rang que le test de Johansen ne soutient pas, et varie du simple au double selon le nombre de retards (de 61,8 à 134,1). Elles ne sont donc pas comparables terme à terme.
+Le rapport cite quatre sensibilités de la consommation à la température : environ **−56 GWh/jour par °C** (section 2.6, pente sous 15 °C), **−48 GWh/jour par °C** (section 7.1, pente d'hiver avant la sobriété), **−24 GWh/jour par °C** (section 3.2, réponse impulsionnelle du VAR) et **−82 GWh/jour par °C** (section 3.2, relation de long terme du VECM). Elles ne mesurent pas la même chose : les deux premières sont des pentes observées par temps froid, sur des échantillons différents (jours sous 15 °C sur toute la période pour −56, jours d'hiver pour −48) ; la réponse impulsionnelle est un effet moyen sur toute l'année, été sans chauffage compris, ce qui l'atténue ; la relation du VECM est imposée avec un rang que le test de Johansen ne soutient pas, et varie du simple au double selon le nombre de retards (de 61,8 à 134,1). Elles ne sont donc pas comparables.
 
 ## 8.3 Limites des modèles et du protocole
 
 - **Hypothèses violées.** Tous les modèles laissent des résidus non normaux ; le SARIMA, le VAR, le VECM et Prophet gardent de l'hétéroscédasticité (que seul le GARCH traite), et le VAR, le VECM et Prophet de l'autocorrélation. Le diagnostic demandé est réalisé, mais il contredit les hypothèses ; les intervalles gaussiens sont des approximations.
 - **Instabilité des estimations.** La vitesse de correction du VECM change de signe selon le nombre de retards ; la persistance du GARCH proche de 1 traduit une variance saisonnière non modélisée ; les paramètres du GARCH diffèrent légèrement entre `arch` et `rugarch`.
-- **Échantillon.** Un seul découpage chronologique et un test de 390 jours, soit un seul hiver : une vague de froid exceptionnelle peut dominer les erreurs. La validation interne (huit semaines d'été) est peu représentative de l'hiver et a été partiellement réutilisée pendant le développement ; les ordres du VAR sont choisis sur un échantillon que l'analyse exploratoire avait déjà vu. La validation croisée temporelle (cinq plis de 56 jours) corrige en partie ce défaut pour les réseaux et le SARIMA seulement.
+- **Échantillon.** Un seul découpage chronologique et un test de 390 jours, soit un seul hiver : une vague de froid exceptionnelle peut dominer les erreurs. La validation interne (huit semaines d'été) est peu représentative de l'hiver et a été partiellement réutilisée pendant le développement ; les ordres du VAR sont choisis sur un échantillon que l'analyse exploratoire avait déjà vu. La validation croisée temporelle (cinq plis de 56 jours) corrige en partie ce défaut pour les réseaux, le SARIMA et AR-GARCH seulement.
 - **Protocoles légèrement différents.** Prophet est réajusté chaque semaine, les autres modèles gardent des paramètres fixes ; l'hybride est pseudo hors échantillon ; les tests de Diebold–Mariano portent sur 385 jours et les métriques sur 390.
 - **Tests.** Aucun écart entre modèles dynamiques voisins n'est significatif après Holm ; la perte quadratique est celle des conclusions formelles, et la perte absolue en donne une autre pour dix paires. Les tests asymptotiques sur 55 blocs et la correction sur 45 paires limitent leur puissance.
 - **Données.** Les 243 derniers jours (2026) sont des données consolidées, éventuellement révisées. Aucune prévision météo n'est utilisée.
@@ -956,7 +973,7 @@ Le rapport cite quatre sensibilités de la consommation à la température : en
 
 ## 9.1 Ce que le projet établit
 
-**Prévision à 7 jours (sections 3 à 6).** Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (RMSE 74,06 GWh/jour) fait aussi bien : l'essentiel du gain vient d'une moyenne autorégressive avec calendrier, non de la sophistication du modèle. Les huit modèles ont une RMSE inférieure à celle de la persistance (109,13) et du naïf saisonnier (113,93) ; l'écart avec la persistance est significatif en perte quadratique pour six d'entre eux (pas pour le VECM ni Prophet) et l'écart avec le naïf saisonnier ne l'est qu'en perte absolue. La validation croisée temporelle confirme l'avantage des réseaux sur le SARIMA : le GRU est meilleur dans les cinq plis et le LSTM dans quatre, surtout en hiver, sans que cela soit testé statistiquement.
+**Prévision à 7 jours (sections 3 à 6).** Sur le test (390 jours), AR-GARCH(1,2)-t a la plus petite erreur (RMSE 74,45 GWh/jour), mais aucun test de Diebold–Mariano corrigé (Holm) ne le distingue de SARIMA, LSTM, GRU, VAR(3) ni de l'hybride. SARIMA(2,1,1)(0,1,1)[7] est le modèle retenu par la règle de validation interne ; AR-GARCH est le meilleur observé sur le test, à égalité avec le GRU en validation croisée ; nous ne concluons pas à une supériorité durable. Le témoin « AR à variance constante » (RMSE 74,06 GWh/jour) fait aussi bien : l'essentiel du gain vient d'une moyenne autorégressive avec calendrier, non de la sophistication du modèle. Les huit modèles ont une RMSE inférieure à celle de la persistance (109,13) et du naïf saisonnier (113,93) ; l'écart avec la persistance est significatif en perte quadratique pour six d'entre eux (pas pour le VECM ni Prophet) et l'écart avec le naïf saisonnier ne l'est qu'en perte absolue. La validation croisée temporelle confirme l'avantage des réseaux sur le SARIMA : le GRU est meilleur dans les cinq plis et le LSTM dans quatre, surtout en hiver, sans que cela soit testé statistiquement.
 
 **Contrefactuels (section 7.2).** À météo et calendrier égaux, le premier confinement a réduit la consommation d'environ 8,06 TWh (−12,20 % du 17 mars au 10 mai 2020 ; −13,48 % sur la fenêtre de l'INSEE, contre −14 % publié). La sobriété de l'hiver 2022-23 correspond à −21,96 TWh (−8,27 %) ; la baisse persiste en 2023-24 (−18,95 TWh, −7,19 %) et en 2024-25 (−17,74 TWh, −6,57 %). Une régression indépendante (section 7.1) montre que la consommation de base a baissé d'environ 98 GWh/jour sans changement significatif de la sensibilité au froid (−48,42 contre −47,71 GWh/jour par °C, p = 0,756). Ces effets sont possiblement surestimés d'environ 1 point (biais du modèle en période normale).
 
@@ -964,12 +981,12 @@ Le rapport cite quatre sensibilités de la consommation à la température : en
 
 ## 9.2 Recommandation d'usage
 
-Pour un gestionnaire de réseau qui prévoit la consommation à sept jours, nous recommandons un modèle de type AR-GARCH(1,2)-t (meilleure erreur observée, intervalles les mieux calibrés, interprétable, coût négligeable), avec le SARIMA comme référence statistique et le GRU ou le LSTM comme challengers (section 6.6). Prophet n'est pas adapté à cet horizon.
+Pour un gestionnaire de réseau qui prévoit la consommation à sept jours, nous recommandons un modèle de type AR-GARCH(1,2)-t, à condition d'élargir ses intervalles en hiver, avec le SARIMA comme référence statistique et le GRU ou le LSTM comme challengers (section 6.6). Prophet n'est pas adapté à cet horizon.
 
 ## 9.3 Limites générales
 
 - **Un seul hiver de test** : les classements entre modèles voisins peuvent changer d'une année à l'autre ; la supériorité observée d'AR-GARCH n'est pas établie statistiquement.
-- **Validation courte et estivale** (56 jours), partiellement réutilisée pendant le développement ; la validation croisée temporelle (cinq plis de 56 jours) ne porte que sur les réseaux, le SARIMA et le naïf saisonnier.
+- **Validation courte et estivale** (56 jours), partiellement réutilisée pendant le développement ; la validation croisée temporelle (cinq plis de 56 jours) ne porte que sur les réseaux, le SARIMA, AR-GARCH et le naïf saisonnier.
 - **Pas de météo future** : c'est la principale source d'erreur en hiver. Les modèles qui utilisent le calendrier ont un avantage sur le SARIMA.
 - **Protocoles légèrement différents** (Prophet réajusté chaque semaine, hybride pseudo hors échantillon, tests sur 385 jours contre 390 pour les métriques).
 - **Diagnostics résiduels défavorables** pour tous les modèles statistiques : les intervalles gaussiens à 95 % sont des approximations, sans garantie de couverture future.
@@ -979,7 +996,7 @@ Pour un gestionnaire de réseau qui prévoit la consommation à sept jours, nous
 
 ## 9.4 Prolongements
 
-Évaluer les modèles sur plusieurs hivers ; intégrer une prévision météo externe ; ajouter les mêmes régresseurs de calendrier au SARIMA pour isoler leur effet ; modéliser la variance saisonnière ; combiner les prévisions ; élargir la recherche d'architectures des réseaux avec une validation plus longue ; pondérer la température par la population dans les contrefactuels. Ces pistes ne sont pas évaluées ici.
+Évaluer les modèles sur plusieurs hivers ; intégrer une prévision météo externe ; ajouter les mêmes régresseurs de calendrier au SARIMA pour isoler leur effet ; modéliser une variance saisonnière ou élargir en hiver les intervalles d'AR-GARCH ; combiner les prévisions ; élargir la recherche d'architectures des réseaux avec une validation plus longue ; pondérer la température par la population dans les contrefactuels. Ces pistes ne sont pas évaluées ici.
 
 Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non une aide à la décision d'exploitation du réseau : elles reposent sur un seul test, des intervalles approximatifs et aucune donnée météo.
 
@@ -990,7 +1007,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.1 Candidats SARIMA sur la validation interne
 
-**Tableau 29 — Quinze modèles comparés sur la validation interne (3 450 jours d'estimation, huit blocs de sept jours).** Les AIC et BIC sont donnés à titre informatif : on ne les compare pas entre différenciations différentes.
+**Tableau 30 — Quinze modèles comparés sur la validation interne (3 450 jours d'estimation, huit blocs de sept jours).** Les AIC et BIC sont donnés à titre informatif : on ne les compare pas entre différenciations différentes.
 
 
 | Modèle | RMSE (GWh/jour) | MAE (GWh/jour) | AIC | BIC |
@@ -1013,7 +1030,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.2 SARIMA retenu : erreurs selon l'horizon
 
-**Tableau 30 — Erreurs du SARIMA(2,1,1)(0,1,1)[7] selon l'horizon sur le test externe.** L'erreur croît avec l'horizon ; les horizons 6 et 7 ont une observation de moins car le dernier bloc compte cinq jours.
+**Tableau 31 — Erreurs du SARIMA(2,1,1)(0,1,1)[7] selon l'horizon sur le test externe.** L'erreur croît avec l'horizon ; les horizons 6 et 7 ont une observation de moins car le dernier bloc compte cinq jours.
 
 
 | Horizon (jours) | Observations | RMSE (GWh/jour) | MAE (GWh/jour) | Biais (GWh/jour) | Couverture à 95 % | Largeur moyenne de l'intervalle (GWh/jour) |
@@ -1028,7 +1045,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.3 VECM : robustesse de la vitesse de correction
 
-**Tableau 31 — Vitesse de correction du VECM selon le nombre de retards en différences.** La vitesse de correction change de signe et β varie du simple au double : elle n'est lisible que comme un ordre de grandeur.
+**Tableau 32 — Vitesse de correction du VECM selon le nombre de retards en différences.** La vitesse de correction change de signe et β varie du simple au double : elle n'est lisible que comme un ordre de grandeur.
 
 
 | Retards en différences k | α (consommation) | p-value de α | α (température) | β (température) | Demi-vie (jours) |
@@ -1039,7 +1056,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.4 Réplication R et Python : les 27 éléments comparés
 
-**Tableau 32 — Comparaison R et Python, 27 éléments.** 25 éléments sur 27 coïncident à 0,1 % près ; les deux écarts supérieurs concernent le GARCH.
+**Tableau 33 — Comparaison R et Python, 27 éléments.** 25 éléments sur 27 coïncident à 0,1 % près ; les deux écarts supérieurs concernent le GARCH.
 
 
 | Élément | Python | R | Écart relatif |
@@ -1074,7 +1091,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.5 Corrélation température–consommation selon le mois
 
-**Tableau 33 — Corrélation selon le mois, sur les niveaux et sur les variations journalières.** Les deux colonnes ont la même forme : le lien saisonnier n'est pas une coïncidence de calendrier.
+**Tableau 34 — Corrélation selon le mois, sur les niveaux et sur les variations journalières.** Les deux colonnes ont la même forme : le lien saisonnier n'est pas une coïncidence de calendrier.
 
 
 | Mois | Corrélation sur les niveaux | Corrélation sur les variations |
@@ -1094,7 +1111,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.6 Sensibilité à la température de chaque hiver
 
-**Tableau 34 — Corrélation, pente et consommation estimée à 8 °C pour chaque hiver.** La pente reste comprise entre −40,2 et −56,5 GWh/jour par °C, tandis que le niveau à 8 °C baisse après l'hiver 2021-2022.
+**Tableau 35 — Corrélation, pente et consommation estimée à 8 °C pour chaque hiver.** La pente reste comprise entre −40,2 et −56,5 GWh/jour par °C, tandis que le niveau à 8 °C baisse après l'hiver 2021-2022.
 
 
 | Hiver | Jours | Corrélation | Pente (GWh/jour par °C) | Consommation à 8 °C (GWh/jour) |
@@ -1112,7 +1129,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.7 RMSE par horizon pour les dix modèles
 
-**Tableau 35 — RMSE selon l'horizon de prévision (GWh/jour).** Les modèles dynamiques sont à égalité à l'horizon 1 ; Prophet est mauvais dès l'horizon 1.
+**Tableau 36 — RMSE selon l'horizon de prévision (GWh/jour).** Les modèles dynamiques sont à égalité à l'horizon 1 ; Prophet est mauvais dès l'horizon 1.
 
 
 | Horizon (jours) | AR-GARCH(1,2)-t | LSTM | GRU | VAR(3) | SARIMA + LSTM | SARIMA | VECM(12, r=1) | Prophet | Persistance | Naïf saisonnier |
@@ -1127,7 +1144,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.8 Prévisions du 1er au 7 septembre 2026 avec intervalles à 95 %
 
-**Tableau 36 — Prévisions et intervalles nominaux à 95 % (GWh/jour).** Le 1er septembre, l'intervalle d'AR-GARCH est le plus étroit et celui de Prophet le plus large ; tous sont nominaux et ne garantissent pas la couverture future.
+**Tableau 37 — Prévisions et intervalles nominaux à 95 % (GWh/jour).** Le 1er septembre, l'intervalle d'AR-GARCH est le plus étroit et celui de Prophet le plus large ; tous sont nominaux et ne garantissent pas la couverture future.
 
 
 | Date | SARIMA | AR-GARCH | VAR(3) | VECM | Prophet |
@@ -1142,7 +1159,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.9 Paires significatives en perte absolue seulement
 
-**Tableau 37 — Dix paires significatives après correction de Holm en perte absolue seulement.** Elles opposent toutes un modèle dynamique au naïf saisonnier, à Prophet ou à la persistance ; aucune ne compare deux modèles dynamiques entre eux.
+**Tableau 38 — Dix paires significatives après correction de Holm en perte absolue seulement.** Elles opposent toutes un modèle dynamique au naïf saisonnier, à Prophet ou à la persistance ; aucune ne compare deux modèles dynamiques entre eux.
 
 
 | Modèle A (plus petite RMSE) | Modèle B | p corrigée, perte quadratique | p corrigée, perte absolue |
@@ -1160,7 +1177,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.10 Les 45 paires du test de Diebold–Mariano
 
-**Tableau 38 — Test de Diebold–Mariano sur les 45 paires de modèles.** Sept paires sont significatives après correction de Holm en perte quadratique et dix-sept en perte absolue.
+**Tableau 39 — Test de Diebold–Mariano sur les 45 paires de modèles.** Sept paires sont significatives après correction de Holm en perte quadratique et dix-sept en perte absolue.
 
 
 | Modèle A | Modèle B | p brute, quadratique | p corrigée, quadratique | p brute, absolue | p corrigée, absolue |
@@ -1213,7 +1230,7 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 
 ## A.11 Questions de comparaison du sujet
 
-**Tableau 39 — Tests de Diebold–Mariano pour les comparaisons demandées par le sujet.** Aucune de ces différences n'est significative en perte quadratique ; en perte absolue, seule la comparaison du meilleur réseau au naïf saisonnier l'est.
+**Tableau 40 — Tests de Diebold–Mariano pour les comparaisons demandées par le sujet.** Aucune de ces différences n'est significative en perte quadratique ; en perte absolue, seule la comparaison du meilleur réseau au naïf saisonnier l'est.
 
 
 | Question | Modèle A | Modèle B | RMSE de A (GWh/jour) | RMSE de B (GWh/jour) | p corrigée, quadratique | p corrigée, absolue |
@@ -1226,18 +1243,36 @@ Les prévisions du 1er au 7 septembre 2026 sont une référence descriptive, non
 | VAR contre SARIMA | VAR(3) | SARIMA | 78,96 | 82,38 | 1,000 | 1,000 |
 | Meilleur modèle contre son premier concurrent | AR-GARCH(1,2)-t | LSTM | 74,45 | 75,07 | 1,000 | 1,000 |
 
+## A.12 Validation croisée temporelle d'AR-GARCH et du témoin AR
+
+**Tableau 41 — Validation croisée temporelle : RMSE par pli (GWh/jour), six modèles sur les cinq mêmes plis.** AR-GARCH fait jeu égal avec le GRU en RMSE moyenne (96,74 contre 96,54) et devance le LSTM et le SARIMA, sans être le meilleur dans aucun pli ; sa couverture moyenne n'est que de 91,1 %.
+
+
+| Modèle | Pli 1 (hiver 2021-22) | Pli 2 (hiver 2022-23) | Pli 3 (été 2023) | Pli 4 (hiver 2024-25) | Pli 5 (été 2025) | Moyenne | Moyenne des plis d'hiver | MAE moyenne | Couverture à 95 % : moyenne (minimum) |
+|---|---|---|---|---|---|---|---|---|---|
+| GRU | 124,44 | 183,12 | 27,42 | 108,83 | 38,87 | 96,54 | 138,80 | 73,67 | — |
+| AR-GARCH(1,2)-t | 118,14 | 195,14 | 33,78 | 96,66 | 39,95 | 96,74 | 136,65 | 77,50 | 91,1 % (67,9 %) |
+| Témoin AR à variance constante | 117,50 | 197,36 | 36,59 | 92,88 | 41,15 | 97,10 | 135,91 | 77,26 | 83,9 % (55,4 %) |
+| LSTM | 130,09 | 190,43 | 34,33 | 103,87 | 39,37 | 99,62 | 141,46 | 76,50 | — |
+| SARIMA | 145,91 | 203,72 | 31,89 | 115,27 | 42,67 | 107,89 | 154,97 | 81,70 | — |
+| Naïf saisonnier | 204,24 | 221,90 | 40,02 | 164,84 | 55,22 | 137,24 | 196,99 | 108,47 | — |
+
+**Protocole.** Mêmes cinq plis de 56 jours et mêmes blocs de 7 jours qu'en section 4.1 (`scripts/cv_ar_garch.py`, `exports/cv_ar_garch.csv`). La régression de calendrier et le modèle sont ré-estimés dans chaque pli, sur sa seule période d'apprentissage ; la spécification (retards 1, 2, 7, 8 et 14, GARCH(1,2), loi de Student) reste celle choisie sur tout l'apprentissage, comme pour le SARIMA et les réseaux. Le script reproduit d'abord les prévisions du test externe du notebook 05 (écart maximal inférieur à 0,001 GWh/jour), ce qui garantit que le protocole est le même.
+
+**Lecture.** En RMSE moyenne, AR-GARCH (96,74 GWh/jour) est au niveau du GRU (96,54) et devant le LSTM (99,62) et le SARIMA (107,89) ; en MAE, il est derrière les deux réseaux (77,50 contre 73,67 et 76,50). Il n'a la plus petite RMSE dans aucun pli : le GRU l'a dans 3 plis et le témoin AR dans 2. Le témoin fait aussi bien en moyenne (97,10) : comme sur le test, le GARCH n'améliore pas la prévision ponctuelle. Il améliore les intervalles (couverture moyenne de 91,1 % contre 83,9 %), mais ceux-ci restent trop étroits en hiver (86,9 % sur les trois plis d'hiver, 67,9 % pendant l'hiver 2022-23), loin des 95,9 % du test. Avec cinq plis, aucun de ces écarts n'est testé statistiquement.
+
 
 <div class="saut"></div>
 
-# Annexe B — Échanges avec le LLM
+# Annexe B — Échanges avec les LLM
 
-Cette annexe regroupe les prompts et les réponses intégrales de la section 5. Les réponses ne sont ni résumées ni corrigées ; leurs limites sont traitées dans l'audit (B.3). **LLM consulté : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026.** Les prompts sont générés par `scripts/preparer_prompts_llm.py` à partir des fichiers de résultats ; les fichiers d'origine sont dans `rapport/annexe_llm/`.
+Cette annexe regroupe les prompts, les réponses intégrales et l'interprétation du groupe (section 5). Les réponses ne sont ni résumées ni corrigées ; leurs limites sont traitées dans l'audit (B.4). **LLM consultés : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026, pour les prompts (a), (b) et (c) ; ChatGPT (OpenAI) pour le prompt (b).** Les prompts sont générés par `scripts/preparer_prompts_llm.py` à partir des fichiers de résultats ; les fichiers d'origine sont dans `rapport/annexe_llm/`.
 
-## B.1 Premier tour (exploratoire)
+## B.1 Essai préliminaire
 
 Deux prompts, portant uniquement sur le modèle SARIMA de la section 3.1, ont été soumis le 9 octobre 2026 à un autre outil (identifié dans `manifest.json`). Ils n'entrent pas dans l'analyse de la section 5 ; les fichiers sont conservés tels quels.
 
-**Tableau 40 — Fichiers du premier tour.** Le premier tour est conservé pour mémoire et n'entre pas dans l'analyse de la section 5.
+**Tableau 42 — Fichiers de l'essai préliminaire.** L'essai préliminaire est conservé pour mémoire et n'entre pas dans l'analyse de la section 5.
 
 
 | Objet | Prompt | Réponse intégrale |
@@ -1246,7 +1281,7 @@ Deux prompts, portant uniquement sur le modèle SARIMA de la section 3.1, ont é
 | Recommandations à partir des prévisions du SARIMA | `02_prompt_recommandations.txt` | `02_reponse_integrale.md` |
 | Audit des affirmations des deux réponses | `audit_affirmations.csv` | |
 
-## B.2 Second tour : prompts et réponses intégrales
+## B.2 Premier tour (Claude) : prompts et réponses intégrales
 
 ### Prompt (a) : hypothèses de modèles à partir des statistiques descriptives
 
@@ -1460,39 +1495,102 @@ Réponds en français, de façon structurée. Ne présente aucune causalité com
 > - La stabilité du classement des modèles : il repose sur une seule période de test de 390 jours.
 > - Toute décision d'exploitation réelle : ces prévisions sont un exercice de modélisation, pas un outil validé pour la conduite du réseau.
 
-## B.3 Audit complet des affirmations du LLM
+## B.3 Interprétation du groupe et second tour (ChatGPT)
 
-**Tableau 41 — Audit des 29 affirmations chiffrées ou causales des trois réponses.** Vingt affirmations sont correctes et neuf simplifiées ; aucune n'est fausse et aucune causalité n'est présentée comme démontrée.
+### Interprétation du groupe
+
+Ce texte (`interpretation_personnelle.md`) a été rédigé par le groupe après le premier tour et la lecture des résultats du projet, avant la consultation de ChatGPT. Seules l'orthographe et la typographie ont été corrigées.
+
+> **Interprétation du groupe**
+>
+> Si on devait choisir un modèle demain, on partirait sur AR-GARCH. AR-GARCH n'est pas démontré meilleur que les autres, mais ses intervalles sont les plus fiables, il est interprétable et quasi instantané. Le témoin AR sans GARCH fait d'ailleurs aussi bien en prévision, ce qui montre que GARCH sert surtout à mesurer l'incertitude. Les plis de validation montrent que tout se joue en hiver : le chauffage électrique rend la conso très sensible au froid, et sans prévisions météo les modèles se font surprendre par chaque vague de froid. La baisse d'après 2022 ressemble à un vrai changement structurel (habitudes, prix, industrie), puisque le niveau a baissé alors que la sensibilité au froid est restée la même. Ce qui fait le plus douter, c'est qu'on n'a testé que sur un seul hiver et validé en été, donc sur la saison où les erreurs comptent le moins.
+
+### Réponse intégrale de ChatGPT au prompt (b)
+
+Le prompt (b) reproduit en B.2 a été soumis à ChatGPT sans modification. Sa réponse (`06_reponse_chatgpt.md`) est reproduite telle quelle.
+
+> Quel modèle se trompe le moins ?
+>
+> Parmi les dix modèles, l’AR-GARCH a les plus petites erreurs sur les trois mesures : 74,45 GWh/jour en RMSE, 48,61 GWh/jour en MAE et 3,78 % en MAPE. Pour une consommation moyenne de 1 258,93 GWh/jour, une RMSE de 74,45 représente environ 5,9 %. Cet indicateur donne beaucoup de poids aux grosses erreurs. Un jour ordinaire, l’écart typique est plutôt de 49 GWh, soit un peu moins de 4 %. La plupart des jours, la prévision est donc juste à environ 4 % près, et quelques jours difficiles font monter la moyenne.
+>
+> À noter : un témoin plus simple (AR sans GARCH) obtient une RMSE légèrement plus faible (74,06). La partie GARCH n’améliore donc pas la prévision elle-même. Son apport porte sur les fourchettes d’incertitude.
+>
+> Une erreur plus petite n’est pas une supériorité prouvée
+>
+> Sur une seule année de test, de petits écarts peuvent être dus au hasard. Le test de Diebold–Mariano vérifie si un écart est assez net pour être attribué au modèle. Comme on fait 45 comparaisons, on corrige les résultats pour éviter les fausses découvertes. Par exemple, AR-GARCH contre SARIMA semble significatif pris isolément (p = 0,037), mais ne l’est plus après correction (0,890).
+>
+> Résultat : l’AR-GARCH bat de façon démontrée Prophet et la persistance (« demain comme aujourd’hui »). Il bat aussi le naïf saisonnier sur l’erreur absolue, mais pas sur l’erreur quadratique (0,157). Face au LSTM, au GRU, au VAR, au SARIMA, au VECM et à l’hybride, on ne peut pas trancher.
+>
+> Les autres critères
+>
+> Fourchettes : une fourchette à 95 % devrait contenir la vraie valeur 95 % du temps. L’AR-GARCH est le plus proche (95,9 %), devant SARIMA (94,4 %), VAR (93,1 %) et VECM (91,3 %). Prophet (88,5 %) est trop optimiste. LSTM, GRU et l’hybride ne fournissent aucune fourchette. La largeur des fourchettes n’est pas donnée : une fourchette très large couvre facilement.
+>
+> Lisibilité : l’AR-GARCH a 25 paramètres et le SARIMA 5, contre 3 684 à 4 905 pour les modèles à réseaux de neurones, difficiles à expliquer.
+>
+> Coût : tous les modèles s’ajustent en moins de 16 secondes, donc ce critère ne départage pas vraiment.
+>
+> Ce qu’on peut et ne peut pas conclure
+>
+> On peut conclure que les modèles statistiques classiques font au moins aussi bien que les réseaux de neurones. Ils battent nettement les règles naïves et Prophet. L’AR-GARCH offre le meilleur compromis entre précision, fourchettes fiables et simplicité.
+>
+> On ne peut pas affirmer qu’il est le meilleur dans l’absolu, ni que ces résultats tiendront sur d’autres années. Les données ne disent pas comment l’erreur évolue entre 1 et 7 jours d’avance, ni comment les modèles se comportent pendant les vagues de froid. Enfin, aucun modèle n’utilise la météo : on ne sait pas ce qu’elle apporterait.
+
+## B.4 Audit complet des affirmations des LLM
+
+**Tableau 43 — Audit des 52 affirmations chiffrées ou causales : 32 dans les trois réponses de Claude, 20 dans celle de ChatGPT.** Trente et une affirmations sont correctes, quinze simplifiées, quatre fausses et deux sont des généralisations abusives ; aucune causalité n'est présentée comme démontrée.
 
 
-| réponse | affirmation du LLM | fichier de vérification | verdict (correct / simplifié / faux / causalité non fondée) | correction ou précision |
+| réponse | affirmation du LLM | fichier de vérification | verdict (correct / simplifié / faux / généralisation abusive / causalité non fondée) | correction ou précision |
 |---|---|---|---|---|
-| a | Le KPSS ne rejette pas la stationnarité de la série brute à 5 % (p = 0,0759) mais la rejetterait à 10 % ; l'ADF rejette la racine unitaire (p = 0,0010) | exports/stats_descriptives.csv | correct |  |
-| a | La p-value de 0,1000 du KPSS est la borne supérieure de la table, pas une valeur exacte | figures/tests_stationnarite.csv | correct | Les deux séries différenciées affichent exactement 0,1. |
-| a | La variance est divisée par environ 9 après Δ1, puis par environ 2 après Δ7 | exports/audit_llm_verifications.csv | correct | Rapports recalculés : 8,92 et 1,99 ; le LLM signale qu'il les calcule. |
-| a | La baisse de variance avec Δ7 est le signe d'une structure hebdomadaire forte | 02_eda.ipynb (forces saisonnières) | simplifié | La saisonnalité hebdomadaire est nette mais modérée (force 0,45) ; c'est la saisonnalité annuelle qui domine (0,90). |
-| a | Choix prudent d = 1, D = 1, s = 7, à comparer à des variantes d = 0 ou D = 0 | exports/selection_avant_test.json | correct | C'est la différenciation du modèle retenu. |
-| a | Candidats SARIMA(0,1,1)(0,1,1)[7], (1,1,1)(0,1,1)[7] et (1,1,0)(0,1,1)[7] | exports/comparaison_validation_complete.csv | simplifié | Les trois candidats ont été testés (RMSE de validation 43,05, 43,37 et 42,97), mais le modèle retenu, SARIMA(2,1,1)(0,1,1)[7] (42,67), n'est pas proposé. |
-| a | Une saisonnalité annuelle est vraisemblable mais n'est pas mesurée par ces statistiques ; la période 7 ne la capterait pas | 02_eda.ipynb (forces saisonnières) | correct | Force saisonnière annuelle de 0,90. |
-| a | Si les deux séries sont stationnaires, pas de cointégration à chercher ; un rang plein de Johansen le confirmerait | exports/ghada/johansen_brut.csv | correct | Trace 337,72 et 39,55 : rang plein. |
-| a | Le kurtosis excédentaire de 2,52 après Δ1 et Δ7 indique des queues épaisses ; GARCH(1,1) puis loi de Student, ordres supérieurs seulement si un effet ARCH subsiste | exports/ghada/garch_comparaison.csv ; exports/ghada/garch_diagnostics.csv | correct | Loi de Student confirmée (ν ≈ 4,10) ; le GARCH(1,1) laisse un effet ARCH (p = 4 × 10⁻⁵) et c'est le GARCH(1,2) qui est retenu. |
-| a | Un kurtosis élevé peut venir de quelques jours atypiques plutôt que d'une volatilité regroupée | exports/garch_pics_volatilite.csv | correct | Hypothèse compatible avec des pics de volatilité fin décembre et mi-août, non testée. |
-| a | L'étendue et l'asymétrie positive (0,69) suggèrent des épisodes de forte consommation qu'une variable externe pourrait expliquer | 02_eda.ipynb (corrélations) | simplifié | L'asymétrie ne dit rien d'une variable externe ; le lien avec la température (corrélation −0,83) est établi par l'analyse exploratoire, pas par ces statistiques. |
-| a | Réseau récurrent : fenêtre de 7 à 28 jours, une couche, quelques dizaines d'unités, entrées normalisées | exports/lstm_gru/configuration.json | correct | Configuration du projet : fenêtre de 28 jours, 32 unités. |
-| b | Une RMSE de 74,45 GWh/jour représente environ 6 % de la consommation moyenne | exports/audit_llm_verifications.csv | correct | 5,91 %. |
-| b | L'écart est plus petit que la RMSE la plupart des jours | exports/audit_llm_verifications.csv | correct | 80,26 % des jours du test. |
-| b | AR-GARCH n'est distingué ni du LSTM, ni du GRU, ni du VAR(3), ni de l'hybride, ni du SARIMA, ni du VECM | exports/lstm_gru/diebold_mariano_toutes_paires.csv | simplifié | Exact en perte quadratique ; en perte absolue, la comparaison avec le VECM est à la limite du seuil (0,053), ce que la réponse ne dit pas. |
-| b | AR-GARCH est meilleur que Prophet (0,029) et que la persistance ; contre le naïf saisonnier, le verdict dépend de la perte (0,157 ou 0,0005) | exports/lstm_gru/diebold_mariano_toutes_paires.csv | correct |  |
-| b | Les modèles qui tiennent compte du passé récent font nettement mieux que la répétition de la dernière valeur | exports/audit_llm_verifications.csv | simplifié | Vrai pour six modèles sur huit ; l'écart avec la persistance n'est pas significatif pour le VECM (0,230) ni pour Prophet (1,000). |
-| b | AR-GARCH atteint la couverture annoncée (95,9 %) | exports/audit_llm_verifications.csv | simplifié | C'est une moyenne : 91,11 % en hiver (décembre à février) contre 97,33 % le reste de l'année. |
-| b | Tous les temps de calcul sont faibles (7,73 s pour le LSTM, 15,18 s pour le GRU) | exports/complexite_modeles.csv | simplifié | Le modèle évalué moyenne cinq réseaux (temps × 5) et Prophet est réajusté 56 fois ; ces facteurs n'étaient pas dans le prompt. |
-| b | La partie GARCH n'apporte pas de précision (témoin à 74,06) mais améliore la couverture (95,9 % contre 93,3 %) | exports/ghada/metriques_test.csv | correct |  |
-| c | AR-GARCH est le seul modèle dont l'intervalle est fourni | exports/previsions_7j.csv ; exports/ghada/previsions_7j_var.csv | simplifié | Vrai pour le prompt ; SARIMA, VAR, VECM et Prophet fournissent aussi des intervalles (annexe A). |
-| c | La largeur de l'intervalle passe d'environ 98 à environ 273 GWh ; l'erreur de 37,9 à 96,2 GWh/jour | exports/ghada/previsions_7j_garch.csv ; exports/lstm_gru/rmse_par_horizon.csv | correct | 97,82 et 273,37. |
-| c | Un intervalle à 95 % laisse environ un jour sur vingt en dehors ; dimensionner la marge sur sa borne haute | exports/audit_llm_verifications.csv | simplifié | En hiver, la couverture tombe à 91,11 % (environ un jour sur onze en dehors) et la plus forte erreur du test atteint 329,35 GWh le 14 janvier 2026. |
-| c | Niveaux les plus élevés le mercredi 2 et le jeudi 3 septembre, creux le dimanche 6 | exports/lstm_gru/previsions_7j.csv ; exports/ghada/previsions_7j_vecm.csv | correct |  |
-| c | Profil hebdomadaire ordinaire : aucune valeur prévue n'approche le niveau d'une vague de froid | data/daily.csv | correct | La dernière semaine observée va de 933,8 à 1 099,1 GWh/jour ; le maximum historique est de 2 150,40. |
-| c | Le creux du week-end est vraisemblablement lié à la baisse d'activité, cause non démontrée par les données | aucun fichier du projet ne permet de le vérifier | correct | Causalité présentée comme une hypothèse, pas comme un résultat. |
-| c | Le lundi 7 septembre présente le plus grand écart entre modèles, environ 33 GWh | exports/lstm_gru/previsions_7j.csv ; exports/ghada/previsions_7j_vecm.csv | correct | 33,45. |
-| c | L'intervalle ne tient pas compte de l'incertitude sur les paramètres | 05_var_vecm_garch_prophet.ipynb (prévision à paramètres figés) | correct | Exact, mais l'information n'était pas dans le prompt. |
-| c | Ne pas utiliser Prophet ni les méthodes naïves pour la prévision à sept jours | exports/lstm_gru/comparaison_test.csv | correct | RMSE de 101,79, 109,13 et 113,93 contre 74,45. |
+| a (Claude) | Le KPSS ne rejette pas la stationnarité de la série brute à 5 % (p = 0,0759) mais la rejetterait à 10 % ; l'ADF rejette la racine unitaire (p = 0,0010) | exports/stats_descriptives.csv | correct |  |
+| a (Claude) | La p-value de 0,1000 du KPSS est la borne supérieure de la table, pas une valeur exacte | figures/tests_stationnarite.csv | correct | Les deux séries différenciées affichent exactement 0,1. |
+| a (Claude) | La variance est divisée par environ 9 après Δ1, puis par environ 2 après Δ7 | exports/audit_llm_verifications.csv | correct | Rapports recalculés : 8,92 et 1,99 ; le LLM signale qu'il les calcule. |
+| a (Claude) | La baisse de variance avec Δ7 est le signe d'une structure hebdomadaire forte | 02_eda.ipynb (forces saisonnières) | simplifié | La saisonnalité hebdomadaire est nette mais modérée (force 0,45) ; c'est la saisonnalité annuelle qui domine (0,90). |
+| a (Claude) | Choix prudent d = 1, D = 1, s = 7, à comparer à des variantes d = 0 ou D = 0 | exports/selection_avant_test.json | correct | C'est la différenciation du modèle retenu. |
+| a (Claude) | Candidats SARIMA(0,1,1)(0,1,1)[7], (1,1,1)(0,1,1)[7] et (1,1,0)(0,1,1)[7] | exports/comparaison_validation_complete.csv | simplifié | Les trois candidats ont été testés (RMSE de validation 43,05, 43,37 et 42,97), mais le modèle retenu, SARIMA(2,1,1)(0,1,1)[7] (42,67), n'est pas proposé. |
+| a (Claude) | Une saisonnalité annuelle est vraisemblable mais n'est pas mesurée par ces statistiques ; la période 7 ne la capterait pas | 02_eda.ipynb (forces saisonnières) | correct | Force saisonnière annuelle de 0,90. |
+| a (Claude) | Si les deux séries sont stationnaires, pas de cointégration à chercher ; un rang plein de Johansen le confirmerait | exports/ghada/johansen_brut.csv | correct | Trace 337,72 et 39,55 : rang plein. |
+| a (Claude) | Le kurtosis excédentaire de 2,52 après Δ1 et Δ7 indique des queues épaisses ; GARCH(1,1) puis loi de Student, ordres supérieurs seulement si un effet ARCH subsiste | exports/ghada/garch_comparaison.csv ; exports/ghada/garch_diagnostics.csv | correct | Loi de Student confirmée (ν ≈ 4,10) ; le GARCH(1,1) laisse un effet ARCH (p = 4 × 10⁻⁵) et c'est le GARCH(1,2) qui est retenu. |
+| a (Claude) | Un kurtosis élevé peut venir de quelques jours atypiques plutôt que d'une volatilité regroupée | exports/garch_pics_volatilite.csv | correct | Hypothèse compatible avec des pics de volatilité fin décembre et mi-août, non testée. |
+| a (Claude) | L'étendue et l'asymétrie positive (0,69) suggèrent des épisodes de forte consommation qu'une variable externe pourrait expliquer | 02_eda.ipynb (corrélations) | simplifié | L'asymétrie ne dit rien d'une variable externe ; le lien avec la température (corrélation −0,83) est établi par l'analyse exploratoire, pas par ces statistiques. |
+| a (Claude) | Réseau récurrent : fenêtre de 7 à 28 jours, une couche, quelques dizaines d'unités, entrées normalisées | exports/lstm_gru/configuration.json | correct | Configuration du projet : fenêtre de 28 jours, 32 unités. |
+| b (Claude) | Une RMSE de 74,45 GWh/jour représente environ 6 % de la consommation moyenne | exports/audit_llm_verifications.csv | correct | 5,91 %. |
+| b (Claude) | L'écart est plus petit que la RMSE la plupart des jours | exports/audit_llm_verifications.csv | correct | 80,26 % des jours du test. |
+| b (Claude) | AR-GARCH n'est distingué ni du LSTM, ni du GRU, ni du VAR(3), ni de l'hybride, ni du SARIMA, ni du VECM | exports/lstm_gru/diebold_mariano_toutes_paires.csv | simplifié | Exact en perte quadratique ; en perte absolue, la comparaison avec le VECM est à la limite du seuil (0,053), ce que la réponse ne dit pas. |
+| b (Claude) | AR-GARCH est meilleur que Prophet (0,029) et que la persistance ; contre le naïf saisonnier, le verdict dépend de la perte (0,157 ou 0,0005) | exports/lstm_gru/diebold_mariano_toutes_paires.csv | correct |  |
+| b (Claude) | Les modèles qui tiennent compte du passé récent font nettement mieux que la répétition de la dernière valeur | exports/audit_llm_verifications.csv | simplifié | Vrai pour six modèles sur huit ; l'écart avec la persistance n'est pas significatif pour le VECM (0,230) ni pour Prophet (1,000). |
+| b (Claude) | AR-GARCH atteint la couverture annoncée (95,9 %) | exports/audit_llm_verifications.csv | simplifié | C'est une moyenne : 91,11 % en hiver (décembre à février) contre 97,33 % le reste de l'année. |
+| b (Claude) | Tous les temps de calcul sont faibles (7,73 s pour le LSTM, 15,18 s pour le GRU) | exports/complexite_modeles.csv | simplifié | Le modèle évalué moyenne cinq réseaux (temps × 5) et Prophet est réajusté 56 fois ; ces facteurs n'étaient pas dans le prompt. |
+| b (Claude) | La partie GARCH n'apporte pas de précision (témoin à 74,06) mais améliore la couverture (95,9 % contre 93,3 %) | exports/ghada/metriques_test.csv | correct |  |
+| b (Claude) | L'erreur « typique » (MAE) est de 48,61 GWh, soit 3,78 % en moyenne (MAPE) | exports/audit_llm_verifications.csv | simplifié | Chiffres exacts et désignés comme des moyennes, mais la MAE est tirée vers le haut par les fortes erreurs : l'erreur médiane est de 29,88 GWh/jour. Affirmation ajoutée lors du second tour. |
+| b (Claude) | AR-GARCH donne les intervalles les mieux calibrés | exports/audit_llm_verifications.csv | faux | En couverture globale, le SARIMA est plus proche de 95 % (94,36 %, écart de 0,64 point) qu'AR-GARCH (95,90 %, écart de 0,90 point). AR-GARCH est le seul à atteindre 95 % et celui qui tient le mieux en hiver (91,11 % contre 86,67 %). Erreur manquée par le premier audit. |
+| c (Claude) | AR-GARCH est le seul modèle dont l'intervalle est fourni | exports/previsions_7j.csv ; exports/ghada/previsions_7j_var.csv | simplifié | Vrai pour le prompt ; SARIMA, VAR, VECM et Prophet fournissent aussi des intervalles (annexe A). |
+| c (Claude) | La largeur de l'intervalle passe d'environ 98 à environ 273 GWh ; l'erreur de 37,9 à 96,2 GWh/jour | exports/ghada/previsions_7j_garch.csv ; exports/lstm_gru/rmse_par_horizon.csv | correct | 97,82 et 273,37. |
+| c (Claude) | Un intervalle à 95 % laisse environ un jour sur vingt en dehors ; dimensionner la marge sur sa borne haute | exports/audit_llm_verifications.csv | simplifié | En hiver, la couverture tombe à 91,11 % (environ un jour sur onze en dehors) et la plus forte erreur du test atteint 329,35 GWh le 14 janvier 2026. |
+| c (Claude) | Niveaux les plus élevés le mercredi 2 et le jeudi 3 septembre, creux le dimanche 6 | exports/lstm_gru/previsions_7j.csv ; exports/ghada/previsions_7j_vecm.csv | correct |  |
+| c (Claude) | Profil hebdomadaire ordinaire : aucune valeur prévue n'approche le niveau d'une vague de froid | data/daily.csv | correct | La dernière semaine observée va de 933,8 à 1 099,1 GWh/jour ; le maximum historique est de 2 150,40. |
+| c (Claude) | Le creux du week-end est vraisemblablement lié à la baisse d'activité, cause non démontrée par les données | aucun fichier du projet ne permet de le vérifier | correct | Causalité présentée comme une hypothèse, pas comme un résultat. |
+| c (Claude) | Le lundi 7 septembre présente le plus grand écart entre modèles, environ 33 GWh | exports/lstm_gru/previsions_7j.csv ; exports/ghada/previsions_7j_vecm.csv | correct | 33,45. |
+| c (Claude) | L'intervalle ne tient pas compte de l'incertitude sur les paramètres | 05_var_vecm_garch_prophet.ipynb (prévision à paramètres figés) | correct | Exact, mais l'information n'était pas dans le prompt. |
+| c (Claude) | Ne pas utiliser Prophet ni les méthodes naïves pour la prévision à sept jours | exports/lstm_gru/comparaison_test.csv | correct | RMSE de 101,79, 109,13 et 113,93 contre 74,45. |
+| c (Claude) | Événement exceptionnel (vague de froid ou de chaleur) : aucun modèle n'utilise la météo | 05_var_vecm_garch_prophet.ipynb ; exports/ghada/granger.csv | faux | Le prompt disait « aucune prévision météo » ; le VAR et le VECM utilisent la température observée comme seconde variable (section 3.2). La même réponse écrit ailleurs, correctement, « aucun n'a de prévision météo ». Erreur manquée par le premier audit. |
+| b (ChatGPT) | Parmi les dix modèles, AR-GARCH a les plus petites erreurs sur les trois mesures : 74,45 (RMSE), 48,61 (MAE) et 3,78 % (MAPE) | exports/lstm_gru/comparaison_test.csv | correct |  |
+| b (ChatGPT) | Pour une consommation moyenne de 1 258,93 GWh/jour, une RMSE de 74,45 représente environ 5,9 % | exports/audit_llm_verifications.csv | simplifié | Calcul exact (5,91 %), mais 1 258,93 est la moyenne de l'apprentissage, imposée par notre prompt ; rapportée à la moyenne du test (1 210,07 GWh/jour), la RMSE vaut 6,15 %. |
+| b (ChatGPT) | Un jour ordinaire, l'écart typique est plutôt de 49 GWh, soit un peu moins de 4 % | exports/audit_llm_verifications.csv | simplifié | 49 GWh est l'erreur absolue moyenne (48,61), tirée vers le haut par les fortes erreurs ; l'erreur médiane, celle d'un jour ordinaire, est de 29,88 GWh/jour (2,56 %). |
+| b (ChatGPT) | La plupart des jours, la prévision est donc juste à environ 4 % près | exports/audit_llm_verifications.csv | simplifié | Vrai pour 65,38 % des jours du test, mais pour 47,78 % seulement en hiver (décembre à février), contre 70,67 % le reste de l'année. |
+| b (ChatGPT) | Quelques jours difficiles font monter la moyenne | exports/audit_llm_verifications.csv | correct | Les 39 jours les plus mal prévus (10 %) portent 69,34 % de l'erreur quadratique totale. |
+| b (ChatGPT) | Le témoin AR sans GARCH a une RMSE légèrement plus faible (74,06) : l'apport du GARCH porte sur les fourchettes | exports/ghada/metriques_test.csv | correct | Couverture de 95,9 % contre 93,3 %. |
+| b (ChatGPT) | AR-GARCH contre SARIMA : significatif pris isolément (p = 0,037), plus après correction sur 45 comparaisons (0,890) | exports/lstm_gru/diebold_mariano_toutes_paires.csv | correct |  |
+| b (ChatGPT) | AR-GARCH bat de façon démontrée Prophet et la persistance ; il bat le naïf saisonnier sur l'erreur absolue, pas sur l'erreur quadratique (0,157) | exports/lstm_gru/diebold_mariano_toutes_paires.csv | correct | p corrigées de 0,029 et < 0,001 ; 0,0005 en perte absolue contre le naïf saisonnier. |
+| b (ChatGPT) | Face au LSTM, au GRU, au VAR, au SARIMA, au VECM et à l'hybride, on ne peut pas trancher | exports/lstm_gru/diebold_mariano_toutes_paires.csv | simplifié | Exact en perte quadratique ; en perte absolue, la comparaison avec le VECM est à la limite du seuil (0,053). Même raccourci que dans la réponse de Claude. |
+| b (ChatGPT) | Fourchettes à 95 % : AR-GARCH est le plus proche (95,9 %), devant SARIMA (94,4 %), VAR (93,1 %) et VECM (91,3 %) | exports/audit_llm_verifications.csv | faux | Le SARIMA est le plus proche de 95 % : 94,36 %, soit 0,64 point d'écart et 22 jours hors intervalle, contre 95,90 %, 0,90 point et 16 jours pour AR-GARCH (19,5 attendus). AR-GARCH est le seul à atteindre 95 % et celui qui tient le mieux en hiver (91,11 % contre 86,67 %). |
+| b (ChatGPT) | Prophet (88,5 %) est trop optimiste ; le LSTM, le GRU et l'hybride ne fournissent aucune fourchette | exports/ghada/metriques_test.csv | correct |  |
+| b (ChatGPT) | La largeur des fourchettes n'est pas donnée : une fourchette très large couvre facilement | exports/audit_llm_verifications.csv | correct | Réserve juste, absente de la réponse de Claude. Largeurs moyennes : 300,10 GWh/jour pour AR-GARCH, 346,75 pour le SARIMA, 277,97 pour le VAR, 293,85 pour le VECM, 332,15 pour Prophet. |
+| b (ChatGPT) | AR-GARCH a 25 paramètres et le SARIMA 5, contre 3 684 à 4 905 pour les réseaux de neurones | exports/complexite_modeles.csv | correct |  |
+| b (ChatGPT) | Tous les modèles s'ajustent en moins de 16 secondes : le coût ne départage pas vraiment | exports/complexite_modeles.csv ; exports/audit_llm_verifications.csv | simplifié | Vrai pour un ajustement (15,18 s au plus) ; le protocole en demande 5 pour chaque réseau (38,67 s pour le LSTM, 75,92 s pour le GRU) et 56 pour Prophet (99,64 s). Le réajustement de Prophet figurait dans le prompt, les cinq graines non. |
+| b (ChatGPT) | Les modèles statistiques classiques font au moins aussi bien que les réseaux de neurones | exports/lstm_gru/comparaison_test.csv ; exports/lstm_gru/cv_temporelle.csv | généralisation abusive | Vrai pour le seul AR-GARCH : le VAR (78,96), le SARIMA (82,38) et le VECM (87,56) ont une RMSE supérieure à celles du LSTM (75,07) et du GRU (76,40). En validation croisée, le GRU bat le SARIMA dans 5 plis sur 5 et le LSTM dans 4. Aucun de ces écarts n'est significatif : les deux familles ne sont pas départagées. |
+| b (ChatGPT) | Les modèles classiques battent nettement les règles naïves et Prophet | exports/lstm_gru/diebold_mariano_toutes_paires.csv ; exports/audit_llm_verifications.csv | généralisation abusive | Écarts de RMSE nets (74 à 88 contre 102 à 114), mais 4 comparaisons sur 12 seulement sont significatives après Holm en perte quadratique, et aucune contre le naïf saisonnier (10 sur 12 en perte absolue). Le prompt ne donnait que les tests d'AR-GARCH, et la réponse contredit sa propre phrase sur le naïf saisonnier (0,157). |
+| b (ChatGPT) | AR-GARCH offre le meilleur compromis entre précision, fourchettes fiables et simplicité | exports/lstm_gru/comparaison_test.csv ; exports/complexite_modeles.csv | correct | Jugement identique à notre recommandation (section 6.6), donné sous réserve ; l'argument des fourchettes s'appuie en partie sur l'affirmation fausse relevée plus haut. |
+| b (ChatGPT) | Une seule année de test : on ne peut pas affirmer qu'AR-GARCH est le meilleur dans l'absolu, ni que les résultats tiendront sur d'autres années | exports/lstm_gru/predictions_test_tous_modeles.csv | correct | Test de 390 jours, un seul hiver. |
+| b (ChatGPT) | Les données ne disent pas comment l'erreur évolue entre 1 et 7 jours d'avance, ni comment les modèles se comportent pendant les vagues de froid | exports/lstm_gru/rmse_par_horizon.csv ; exports/audit_llm_verifications.csv | correct | Exact pour le prompt. Le projet le mesure : RMSE d'AR-GARCH de 37,90 GWh/jour à un jour et de 96,22 à sept jours ; 121,61 en hiver contre 52,62 le reste de l'année. |
+| b (ChatGPT) | Aucun modèle n'utilise la météo : on ne sait pas ce qu'elle apporterait | 05_var_vecm_garch_prophet.ipynb ; exports/ghada/granger.csv | faux | Le prompt disait « aucune prévision météo ». Le VAR et le VECM utilisent la température observée comme seconde variable (section 3.2), et elle aide à prévoir la consommation au sens de Granger (F = 118,57). Seul l'apport d'une prévision météo n'est pas mesuré. |

@@ -30,3 +30,55 @@ AR-GARCH : date de la plus forte erreur absolue (aaaammjj),20260114.0
 Rapport des variances : brute / différence simple,8.921615260986346
 Rapport des variances : différence simple / différences simple et saisonnière,1.9880691656642635
 RMSE d'AR-GARCH rapportée à la consommation moyenne (%),5.914023487030802
+Consommation moyenne observée sur le test (GWh/jour),1210.0673564102565
+RMSE d'AR-GARCH rapportée à la consommation moyenne du test (%),6.152828875197115
+AR-GARCH : erreur absolue médiane (GWh/jour),29.88009338212214
+AR-GARCH : erreur absolue médiane en pourcentage de la consommation du jour (%),2.5626198404114175
+AR-GARCH : part des jours prévus à 4 % près (%),65.38461538461539
+"AR-GARCH : part des jours prévus à 4 % près, hiver (décembre à février) (%)",47.77777777777778
+"AR-GARCH : part des jours prévus à 4 % près, hors hiver (%)",70.66666666666667
+AR-GARCH : part de l'erreur quadratique totale due aux 10 % de jours les plus mal prévus (%),69.33827484899587
+AR-GARCH : part de l'erreur quadratique totale due aux jours d'hiver (%),61.57196819095911
+AR-GARCH : nombre de surestimations parmi les 12 plus fortes erreurs du test,7.0
+AR-GARCH : température moyenne des jours de surestimation parmi ces 12 erreurs (°C),11.659714285714285
+AR-GARCH : température moyenne des jours de sous-estimation parmi ces 12 erreurs (°C),1.4644000000000001
+"AR-GARCH : corrélation entre erreur signée et température, hiver",0.723899670619762
+SARIMA : couverture de l'intervalle à 95 % (%),94.35897435897435
+SARIMA : écart absolu entre la couverture et 95 % (points),0.6410256410256494
+"SARIMA : nombre de jours hors de l'intervalle (19,5 attendus sur 390)",22.0
+SARIMA : couverture en hiver (%),86.66666666666667
+SARIMA : largeur moyenne de l'intervalle (GWh/jour),346.7489440631494
+VAR(3) : couverture de l'intervalle à 95 % (%),93.07692307692308
+VAR(3) : écart absolu entre la couverture et 95 % (points),1.9230769230769198
+"VAR(3) : nombre de jours hors de l'intervalle (19,5 attendus sur 390)",27.0
+VAR(3) : couverture en hiver (%),76.66666666666667
+VAR(3) : largeur moyenne de l'intervalle (GWh/jour),277.974647856748
+VECM : couverture de l'intervalle à 95 % (%),91.28205128205128
+VECM : écart absolu entre la couverture et 95 % (points),3.7179487179487154
+"VECM : nombre de jours hors de l'intervalle (19,5 attendus sur 390)",34.0
+VECM : couverture en hiver (%),75.55555555555556
+VECM : largeur moyenne de l'intervalle (GWh/jour),293.85419379084493
+AR-GARCH : couverture de l'intervalle à 95 % (%),95.8974358974359
+AR-GARCH : écart absolu entre la couverture et 95 % (points),0.8974358974358978
+"AR-GARCH : nombre de jours hors de l'intervalle (19,5 attendus sur 390)",16.0
+AR-GARCH : couverture en hiver (%),91.11111111111111
+AR-GARCH : largeur moyenne de l'intervalle (GWh/jour),300.098179407778
+Prophet : couverture de l'intervalle à 95 % (%),88.46153846153845
+Prophet : écart absolu entre la couverture et 95 % (points),6.538461538461547
+"Prophet : nombre de jours hors de l'intervalle (19,5 attendus sur 390)",45.0
+Prophet : couverture en hiver (%),66.66666666666666
+Prophet : largeur moyenne de l'intervalle (GWh/jour),332.14948399384804
+"LSTM : temps d'ajustement du protocole, tous ajustements compris (s)",38.67329599999721
+"GRU : temps d'ajustement du protocole, tous ajustements compris (s)",75.92041599998993
+"Prophet : temps d'ajustement du protocole, tous ajustements compris (s)",99.64425520013901
+"Modèles classiques contre références : paires significatives après Holm, perte quadratique (sur 12)",4.0
+"Modèles classiques significativement meilleurs que Persistance après Holm, perte quadratique (sur 4)",3.0
+"Modèles classiques significativement meilleurs que Naïf saisonnier après Holm, perte quadratique (sur 4)",0.0
+"Modèles classiques significativement meilleurs que Prophet après Holm, perte quadratique (sur 4)",1.0
+"Modèles classiques contre références : paires significatives après Holm, perte absolue (sur 12)",10.0
+"Modèles classiques significativement meilleurs que Persistance après Holm, perte absolue (sur 4)",4.0
+"Modèles classiques significativement meilleurs que Naïf saisonnier après Holm, perte absolue (sur 4)",3.0
+"Modèles classiques significativement meilleurs que Prophet après Holm, perte absolue (sur 4)",3.0
+Modèles classiques dont la RMSE de test dépasse celles du LSTM et du GRU (sur 4),3.0
+Validation croisée : plis où le GRU a une RMSE inférieure à celle du SARIMA (sur 5),5.0
+Validation croisée : plis où le LSTM a une RMSE inférieure à celle du SARIMA (sur 5),4.0

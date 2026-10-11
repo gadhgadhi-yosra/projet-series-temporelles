@@ -1,12 +1,12 @@
-# Annexe B — Échanges avec le LLM
+# Annexe B — Échanges avec les LLM
 
-Cette annexe regroupe les prompts et les réponses intégrales de la section 5. Les réponses ne sont ni résumées ni corrigées ; leurs limites sont traitées dans l'audit (B.3). **LLM consulté : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026.** Les prompts sont générés par `scripts/preparer_prompts_llm.py` à partir des fichiers de résultats ; les fichiers d'origine sont dans `rapport/annexe_llm/`.
+Cette annexe regroupe les prompts, les réponses intégrales et l'interprétation du groupe (section 5). Les réponses ne sont ni résumées ni corrigées ; leurs limites sont traitées dans l'audit (B.4). **LLM consultés : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026, pour les prompts (a), (b) et (c) ; ChatGPT (OpenAI) pour le prompt (b).** Les prompts sont générés par `scripts/preparer_prompts_llm.py` à partir des fichiers de résultats ; les fichiers d'origine sont dans `rapport/annexe_llm/`.
 
-## B.1 Premier tour (exploratoire)
+## B.1 Essai préliminaire
 
 Deux prompts, portant uniquement sur le modèle SARIMA de la section 3.1, ont été soumis le 9 octobre 2026 à un autre outil (identifié dans `manifest.json`). Ils n'entrent pas dans l'analyse de la section 5 ; les fichiers sont conservés tels quels.
 
-[[TAB:tour1|Fichiers du premier tour|Le premier tour est conservé pour mémoire et n'entre pas dans l'analyse de la section 5.]]
+[[TAB:tour1|Fichiers de l'essai préliminaire|L'essai préliminaire est conservé pour mémoire et n'entre pas dans l'analyse de la section 5.]]
 
 | Objet | Prompt | Réponse intégrale |
 |---|---|---|
@@ -14,7 +14,7 @@ Deux prompts, portant uniquement sur le modèle SARIMA de la section 3.1, ont é
 | Recommandations à partir des prévisions du SARIMA | `02_prompt_recommandations.txt` | `02_reponse_integrale.md` |
 | Audit des affirmations des deux réponses | `audit_affirmations.csv` | |
 
-## B.2 Second tour : prompts et réponses intégrales
+## B.2 Premier tour (Claude) : prompts et réponses intégrales
 
 ### Prompt (a) : hypothèses de modèles à partir des statistiques descriptives
 
@@ -40,8 +40,22 @@ Deux prompts, portant uniquement sur le modèle SARIMA de la section 3.1, ont é
 
 [[INSERER:rapport/annexe_llm/05_reponse_integrale.md]]
 
-## B.3 Audit complet des affirmations du LLM
+## B.3 Interprétation du groupe et second tour (ChatGPT)
 
-[[TAB:audit_complet|Audit des 29 affirmations chiffrées ou causales des trois réponses|Vingt affirmations sont correctes et neuf simplifiées ; aucune n'est fausse et aucune causalité n'est présentée comme démontrée.]]
+### Interprétation du groupe
+
+Ce texte (`interpretation_personnelle.md`) a été rédigé par le groupe après le premier tour et la lecture des résultats du projet, avant la consultation de ChatGPT. Seules l'orthographe et la typographie ont été corrigées.
+
+[[INSERER_LIGNES:rapport/annexe_llm/interpretation_personnelle.md]]
+
+### Réponse intégrale de ChatGPT au prompt (b)
+
+Le prompt (b) reproduit en B.2 a été soumis à ChatGPT sans modification. Sa réponse (`06_reponse_chatgpt.md`) est reproduite telle quelle.
+
+[[INSERER_LIGNES:rapport/annexe_llm/06_reponse_chatgpt.md]]
+
+## B.4 Audit complet des affirmations des LLM
+
+[[TAB:audit_complet|Audit des 52 affirmations chiffrées ou causales : 32 dans les trois réponses de Claude, 20 dans celle de ChatGPT|Trente et une affirmations sont correctes, quinze simplifiées, quatre fausses et deux sont des généralisations abusives ; aucune causalité n'est présentée comme démontrée.]]
 
 [[TABLE_CSV:rapport/annexe_llm/audit_gabarit.csv]]

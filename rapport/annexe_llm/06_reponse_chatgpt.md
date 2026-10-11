@@ -1,0 +1,13 @@
+Quel modèle se trompe le moins ?
+Parmi les dix modèles, l’AR-GARCH a les plus petites erreurs sur les trois mesures : 74,45 GWh/jour en RMSE, 48,61 GWh/jour en MAE et 3,78 % en MAPE. Pour une consommation moyenne de 1 258,93 GWh/jour, une RMSE de 74,45 représente environ 5,9 %. Cet indicateur donne beaucoup de poids aux grosses erreurs. Un jour ordinaire, l’écart typique est plutôt de 49 GWh, soit un peu moins de 4 %. La plupart des jours, la prévision est donc juste à environ 4 % près, et quelques jours difficiles font monter la moyenne.
+À noter : un témoin plus simple (AR sans GARCH) obtient une RMSE légèrement plus faible (74,06). La partie GARCH n’améliore donc pas la prévision elle-même. Son apport porte sur les fourchettes d’incertitude.
+Une erreur plus petite n’est pas une supériorité prouvée
+Sur une seule année de test, de petits écarts peuvent être dus au hasard. Le test de Diebold–Mariano vérifie si un écart est assez net pour être attribué au modèle. Comme on fait 45 comparaisons, on corrige les résultats pour éviter les fausses découvertes. Par exemple, AR-GARCH contre SARIMA semble significatif pris isolément (p = 0,037), mais ne l’est plus après correction (0,890).
+Résultat : l’AR-GARCH bat de façon démontrée Prophet et la persistance (« demain comme aujourd’hui »). Il bat aussi le naïf saisonnier sur l’erreur absolue, mais pas sur l’erreur quadratique (0,157). Face au LSTM, au GRU, au VAR, au SARIMA, au VECM et à l’hybride, on ne peut pas trancher.
+Les autres critères
+Fourchettes : une fourchette à 95 % devrait contenir la vraie valeur 95 % du temps. L’AR-GARCH est le plus proche (95,9 %), devant SARIMA (94,4 %), VAR (93,1 %) et VECM (91,3 %). Prophet (88,5 %) est trop optimiste. LSTM, GRU et l’hybride ne fournissent aucune fourchette. La largeur des fourchettes n’est pas donnée : une fourchette très large couvre facilement.
+Lisibilité : l’AR-GARCH a 25 paramètres et le SARIMA 5, contre 3 684 à 4 905 pour les modèles à réseaux de neurones, difficiles à expliquer.
+Coût : tous les modèles s’ajustent en moins de 16 secondes, donc ce critère ne départage pas vraiment.
+Ce qu’on peut et ne peut pas conclure
+On peut conclure que les modèles statistiques classiques font au moins aussi bien que les réseaux de neurones. Ils battent nettement les règles naïves et Prophet. L’AR-GARCH offre le meilleur compromis entre précision, fourchettes fiables et simplicité.
+On ne peut pas affirmer qu’il est le meilleur dans l’absolu, ni que ces résultats tiendront sur d’autres années. Les données ne disent pas comment l’erreur évolue entre 1 et 7 jours d’avance, ni comment les modèles se comportent pendant les vagues de froid. Enfin, aucun modèle n’utilise la météo : on ne sait pas ce qu’elle apporterait.

@@ -1,7 +1,8 @@
 """Génère rapport/annexe_A_tableaux.md à partir des fichiers de résultats (aucun chiffre saisi à la main).
 
 Les grands tableaux du rapport (candidats SARIMA, robustesse du VECM, détails R, détails de la section 7,
-RMSE par horizon, intervalles de prévision, toutes les paires de Diebold–Mariano) sont déplacés en annexe.
+RMSE par horizon, intervalles de prévision, toutes les paires de Diebold–Mariano, validation croisée d'AR-GARCH)
+sont déplacés en annexe.
 """
 from pathlib import Path
 
@@ -138,6 +139,42 @@ parts += ['## A.11 Questions de comparaison du sujet\n',
           "[[TAB:annexe_dm_questions|Tests de Diebold–Mariano pour les comparaisons demandées par le sujet|Aucune de ces différences n'est significative en perte quadratique ; en perte absolue, seule la comparaison du meilleur réseau au naïf saisonnier l'est.]]\n",
           md_table(['Question', 'Modèle A', 'Modèle B', 'RMSE de A (GWh/jour)', 'RMSE de B (GWh/jour)', 'p corrigée, quadratique',
                     'p corrigée, absolue'], rows), '']
+
+# A.12 validation croisée temporelle d'AR-GARCH et du témoin (mêmes plis que la section 4.1)
+cv = pd.concat([pd.read_csv(E / 'cv_ar_garch.csv'), pd.read_csv(E / 'lstm_gru' / 'cv_temporelle.csv')], ignore_index=True)
+res = pd.read_csv(E / 'cv_ar_garch_resume.csv').set_index('modèle')
+par_pli = cv.pivot(index='modèle', columns='pli', values='RMSE')
+couv = cv.pivot(index='modèle', columns='pli', values='couverture à 95 % (%)')
+entetes = [f"Pli {p} ({s} {str(d)[:4] if s == 'été' else str(d)[:4] + '-' + str(int(str(d)[:4]) + 1)[2:]})"
+           for p, s, d in cv.drop_duplicates('pli').sort_values('pli')[['pli', 'saison du test', 'début test']].itertuples(index=False)]
+rows = []
+for m in res.index:
+    c = couv.loc[m]
+    rows.append([m] + [fr(par_pli.loc[m, p]) for p in sorted(par_pli.columns)]
+                + [fr(res.loc[m, 'RMSE (moyenne des 5 plis)']), fr(res.loc[m, "RMSE moyenne des plis d'hiver"]),
+                   fr(res.loc[m, 'MAE (moyenne des 5 plis)']),
+                   '—' if c.isna().all() else f"{fr(c.mean(), 1)} % ({fr(c.min(), 1)} %)"])
+couv_test = pd.read_csv(E / 'ghada' / 'metriques_test.csv', index_col=0).loc['AR-GARCH(1,2)-t', 'couverture_95'] * 100
+g, t_, gru, lstm, sar = (res.loc[m] for m in ['AR-GARCH(1,2)-t', 'Témoin AR à variance constante', 'GRU', 'LSTM', 'SARIMA'])
+RM, MA = 'RMSE (moyenne des 5 plis)', 'MAE (moyenne des 5 plis)'
+parts += ['## A.12 Validation croisée temporelle d\'AR-GARCH et du témoin AR\n',
+          f"[[TAB:annexe_cv_garch|Validation croisée temporelle : RMSE par pli (GWh/jour), six modèles sur les cinq mêmes plis|AR-GARCH fait jeu égal avec le GRU en RMSE moyenne ({fr(g[RM])} contre {fr(gru[RM])}) et devance le LSTM et le SARIMA, sans être le meilleur dans aucun pli ; sa couverture moyenne n'est que de {fr(g['couverture moyenne à 95 % (%)'], 1)} %.]]\n",
+          md_table(['Modèle'] + entetes + ['Moyenne', "Moyenne des plis d'hiver", 'MAE moyenne', 'Couverture à 95 % : moyenne (minimum)'], rows), '',
+          "**Protocole.** Mêmes cinq plis de 56 jours et mêmes blocs de 7 jours qu'en section 4.1 (`scripts/cv_ar_garch.py`, "
+          "`exports/cv_ar_garch.csv`). La régression de calendrier et le modèle sont ré-estimés dans chaque pli, sur sa seule période "
+          "d'apprentissage ; la spécification (retards 1, 2, 7, 8 et 14, GARCH(1,2), loi de Student) reste celle choisie sur tout "
+          "l'apprentissage, comme pour le SARIMA et les réseaux. Le script reproduit d'abord les prévisions du test externe du notebook 05 "
+          "(écart maximal inférieur à 0,001 GWh/jour), ce qui garantit que le protocole est le même.\n",
+          f"**Lecture.** En RMSE moyenne, AR-GARCH ({fr(g[RM])} GWh/jour) est au niveau du GRU ({fr(gru[RM])}) et devant le LSTM "
+          f"({fr(lstm[RM])}) et le SARIMA ({fr(sar[RM])}) ; en MAE, il est derrière les deux réseaux ({fr(g[MA])} contre "
+          f"{fr(gru[MA])} et {fr(lstm[MA])}). Il n'a la plus petite RMSE dans aucun pli : le GRU l'a dans "
+          f"{int(gru['plis où le modèle a la plus petite RMSE'])} plis et le témoin AR dans {int(t_['plis où le modèle a la plus petite RMSE'])}. "
+          f"Le témoin fait aussi bien en moyenne ({fr(t_[RM])}) : comme sur le test, le GARCH n'améliore pas la prévision ponctuelle. "
+          f"Il améliore les intervalles (couverture moyenne de {fr(g['couverture moyenne à 95 % (%)'], 1)} % contre "
+          f"{fr(t_['couverture moyenne à 95 % (%)'], 1)} %), mais ceux-ci restent trop étroits en hiver "
+          f"({fr(g[chr(99) + 'ouverture moyenne des plis d' + chr(39) + 'hiver (%)'], 1)} % sur les trois plis d'hiver, "
+          f"{fr(couv.loc['AR-GARCH(1,2)-t'].min(), 1)} % pendant l'hiver 2022-23), loin des {fr(couv_test, 1)} % du test. "
+          "Avec cinq plis, aucun de ces écarts n'est testé statistiquement.\n"]
 
 (ROOT / 'rapport' / 'annexe_A_tableaux.md').write_text('\n'.join(parts) + '\n', encoding='utf-8', newline='\n')
 print('écrit rapport/annexe_A_tableaux.md')

@@ -10,6 +10,7 @@ Marqueurs reconnus dans les sections :
     @fig:id  /  @tab:id                      renvoi (« figure 3 », « tableau 7 »)
     [[INCLURE:chemin]]                       insère le contenu d'un fichier texte dans un bloc de code
     [[INSERER:chemin]]                       insère un fichier Markdown tel quel, en citation
+    [[INSERER_LIGNES:chemin]]                insère un texte en citation, une ligne du fichier par paragraphe
     [[TABLE_CSV:chemin]]                     rend un fichier CSV en tableau
 """
 from pathlib import Path
@@ -67,6 +68,12 @@ def numeroter(texte, compteurs, labels):
         if m:  # fichier Markdown inséré tel quel, en citation (réponse intégrale d'un LLM)
             contenu = (ROOT / m.group(1).strip()).read_text(encoding='utf-8').rstrip()
             sortie += ['> ' + l if l.strip() else '>' for l in contenu.splitlines()]
+            continue
+        m = re.match(r'\[\[INSERER_LIGNES:([^\]]+)\]\]\s*$', ligne)
+        if m:  # texte sans mise en forme Markdown : chaque ligne reste un paragraphe, un titre « # » passe en gras
+            contenu = [l.strip() for l in (ROOT / m.group(1).strip()).read_text(encoding='utf-8').splitlines() if l.strip()]
+            contenu = [re.sub(r'^#+ +(.+)$', r'**\1**', l) for l in contenu]
+            sortie += '\n>\n'.join('> ' + l for l in contenu).split('\n')
             continue
         m = re.match(r'\[\[TABLE_CSV:([^\]]+)\]\]\s*$', ligne)
         if m:  # fichier CSV rendu en tableau

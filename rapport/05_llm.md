@@ -1,16 +1,16 @@
 # 5 — IA générative et LLM
 
-Cette section évalue l'usage d'un LLM comme outil d'aide à l'analyse, selon les quatre points du sujet : hypothèses de modèles à partir des statistiques descriptives (5.2), explication vulgarisée (5.3), recommandations de gestion avec limites explicites (5.4), comparaison avec nos résultats et recherche des erreurs du LLM (5.5 et 5.6). Les prompts et les réponses intégrales sont en annexe B.
+Cette section évalue l'usage d'un LLM comme outil d'aide à l'analyse, selon les quatre points du sujet : hypothèses de modèles à partir des statistiques descriptives (5.2), explication vulgarisée (5.3), recommandations de gestion avec limites explicites (5.4), comparaison avec une interprétation rédigée par le groupe et recherche des erreurs des LLM (5.5 et 5.6). Les prompts, les réponses intégrales et l'interprétation du groupe sont en annexe B.
 
-## 5.1 Démarche et outil utilisé
+## 5.1 Démarche et outils utilisés
 
-**LLM consulté : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026.** Trois prompts complets lui ont été soumis ; ils sont générés à partir des fichiers de résultats par `scripts/preparer_prompts_llm.py` : (a) hypothèses de modèles à partir des statistiques descriptives, (b) vulgarisation de la comparaison finale pour un décideur, (c) recommandations de gestion du réseau, avec limites formulées par le LLM. Chaque prompt demande de n'utiliser que les chiffres fournis.
+**Premier tour : Claude (Anthropic), modèle Claude Opus 5.5 (identifiant `claude-opus-5-5`), le 11 octobre 2026.** Trois prompts complets lui ont été soumis ; ils sont générés à partir des fichiers de résultats par `scripts/preparer_prompts_llm.py` : (a) hypothèses de modèles à partir des statistiques descriptives, (b) vulgarisation de la comparaison finale pour un décideur, (c) recommandations de gestion du réseau, avec limites formulées par le LLM. Chaque prompt demande de n'utiliser que les chiffres fournis.
 
-Trois précisions s'imposent sur la portée de cet exercice.
+**Second tour : ChatGPT (OpenAI).** Après ce premier tour et la lecture des résultats du projet, le groupe a rédigé sa propre interprétation de la comparaison finale (annexe B), puis a soumis le prompt (b), sans le modifier, à ChatGPT.
 
-- **Le LLM n'était pas neutre vis-à-vis du projet.** Claude a aussi servi d'outil d'aide pendant la préparation du projet (code, mise en forme). Chaque réponse est rédigée à partir du seul contenu de son prompt, mais ce n'est pas la consultation d'un outil qui découvrirait le sujet.
-- **L'audit n'est pas indépendant.** La vérification de la section 5.6 a été menée avec le même outil, de façon systématique : chaque nombre cité est recherché dans le prompt par un script (`scripts/audit_reponses_llm.py`), et chaque affirmation générale est confrontée à un fichier de résultats.
-- **Un premier tour exploratoire** (9 octobre 2026, deux prompts sur le seul SARIMA, autre outil identifié dans `rapport/annexe_llm/manifest.json`) est conservé en annexe B ; il n'entre pas dans l'analyse ci-dessous.
+- **L'interprétation du groupe précède ChatGPT, pas Claude.** L'exigence du sujet (une interprétation rédigée avant de solliciter le LLM) est remplie pour le second tour ; elle ne l'est pas pour le premier, dont les réponses étaient connues du groupe au moment d'écrire.
+- **Claude n'était pas neutre, et l'audit n'est pas indépendant.** Claude a aussi servi d'outil d'aide pendant la préparation du projet (code, mise en forme), et la vérification de la section 5.6 a été menée avec lui, y compris pour la réponse de ChatGPT. Chaque verdict renvoie donc à un fichier de résultats et à une valeur recalculée par `scripts/audit_reponses_llm.py` ; les principaux écarts de la réponse de ChatGPT ont d'abord été relevés par le groupe.
+- **Un essai préliminaire** (9 octobre 2026, deux prompts sur le seul SARIMA, autre outil) est conservé en annexe B ; il n'entre pas dans l'analyse.
 
 ## 5.2 Hypothèses de modèles à partir des statistiques descriptives
 
@@ -41,7 +41,7 @@ Ces hypothèses recoupent largement la démarche du projet. Deux écarts sont à
 
 > « Deux modèles peuvent avoir des erreurs différentes sur une année simplement par hasard. Le test de Diebold–Mariano mesure si l'écart est trop grand pour être dû au hasard. […] On ne peut pas dire qu'il sera encore le meilleur l'an prochain : le test porte sur une seule période de 390 jours, et l'écart avec ses concurrents directs n'est pas démontré. »
 
-L'explication est fidèle aux chiffres et rend bien la distinction entre « meilleur observé » et « meilleur démontré ». Elle dépasse la longueur demandée (environ 400 mots) et lisse trois points : la couverture de 95,9 % est une moyenne qui masque l'hiver, « les modèles qui tiennent compte du passé récent » ne battent pas tous la persistance de façon significative, et le coût des réseaux est sous-estimé (section 5.6).
+L'explication rend bien la distinction entre « meilleur observé » et « meilleur démontré » ; une affirmation est fausse, sur les intervalles « les mieux calibrés » (section 5.6). Elle dépasse la longueur demandée (environ 400 mots) et lisse trois points : la couverture de 95,9 % est une moyenne qui masque l'hiver, « les modèles qui tiennent compte du passé récent » ne battent pas tous la persistance de façon significative, et le coût des réseaux est sous-estimé (section 5.6).
 
 ## 5.4 Recommandations de gestion et limites
 
@@ -53,41 +53,55 @@ Le prompt (c) demande des recommandations à partir des prévisions du 1er au 7 
 
 - **La marge du LLM est insuffisante en hiver.** Sur le test, la couverture d'AR-GARCH tombe à 91,11 % de décembre à février (contre 97,33 % le reste de l'année), et sa RMSE y atteint 121,62 GWh/jour (contre 52,62) ; la plus forte erreur est de 329,35 GWh le 14 janvier 2026. Une marge calée sur la borne haute serait donc dépassée environ un jour sur onze en hiver, précisément quand le réseau est tendu.
 - **La semaine prévue est une semaine facile.** Début septembre, les modèles s'accordent à moins de 35 GWh/jour près ; ces recommandations ne disent rien de leur comportement lors d'un épisode de froid, que la validation croisée montre environ quatre fois plus difficile à prévoir (section 4.1).
-- **Le choix d'AR-GARCH n'est pas démontré.** Aucun test corrigé ne le distingue de ses concurrents ; il n'a pas été soumis à la validation croisée, contrairement au SARIMA et aux réseaux.
+- **Le choix d'AR-GARCH n'est pas démontré.** Aucun test corrigé ne le distingue de ses concurrents ; en validation croisée, il fait jeu égal avec le GRU sans le devancer (annexe A).
 - **Les données de 2026 sont consolidées**, donc révisables, et les valeurs réelles de septembre ne sont pas disponibles : aucune de ces recommandations n'a pu être confrontée à la réalité.
 - **Les recommandations restent génériques** : sans capacité disponible, sans coût d'une défaillance ni prévision météo, le LLM ne peut proposer aucun seuil chiffré de marge. Elles ne constituent pas une aide à la décision d'exploitation.
 
-## 5.5 Comparaison entre nos résultats et les réponses du LLM
+## 5.5 Comparaison entre l'interprétation du groupe et la réponse de ChatGPT
 
-Le sujet demande de comparer l'explication du LLM à une interprétation experte rédigée avant de le solliciter. **Aucune interprétation personnelle n'a été rédigée avant la consultation du LLM** ; cette exigence n'est donc pas satisfaite, et nous ne la reconstituons pas après coup. La comparaison ci-dessous porte sur **les résultats calculés du projet** (sections 2 à 7) contre les réponses du LLM.
+Notre interprétation (environ 150 mots, sans chiffre) et la réponse de ChatGPT au prompt (b) (environ 470 mots) sont en annexe B. Le groupe avait lu tous les résultats ; ChatGPT n'a reçu que le tableau de test et les tests de Diebold–Mariano, sans rien sur la baisse d'après 2022.
 
-- **Convergences.** Différenciation d = 1, D = 1, s = 7 ; VAR en niveaux et absence de cointégration (rang plein de Johansen) ; loi de Student pour le GARCH (ν ≈ 4,10) ; petit réseau à une couche ; distinction entre meilleur observé et meilleur démontré ; rôle du GARCH limité aux intervalles ; rejet de Prophet à sept jours.
-- **Divergences.** Le LLM ne propose pas le modèle retenu, SARIMA(2,1,1)(0,1,1)[7] ; il part d'un GARCH(1,1), que nos diagnostics jugent insuffisant (effet ARCH résiduel, p = 4 × 10⁻⁵), tout en prévoyant de monter en ordre ; il ne peut pas voir que la saisonnalité annuelle domine.
-- **Simplifications excessives.** Neuf affirmations sur 29 sont exactes mais incomplètes (tableau @tab:audit) ; les plus importantes concernent la couverture moyenne, qui masque l'hiver, et la marge de sécurité qui en découle.
-- **Causalités non fondées.** Nous n'en relevons aucune : la seule explication causale avancée (le creux du week-end lié à la baisse d'activité) est présentée comme une hypothèse non démontrée.
+- **Convergences.** Les deux textes retiennent AR-GARCH sans le dire démontré meilleur, limitent le rôle du GARCH à la mesure de l'incertitude et rappellent qu'il n'y a qu'une année de test. Cela prouve peu : ces idées se lisaient dans le prompt et dans les réponses de Claude.
+- **Divergences.** *La saison* : pour le groupe, « tout se joue en hiver » ; pour ChatGPT, « la plupart des jours, la prévision est juste à environ 4 % près ». Les fichiers donnent raison au groupe : 65,4 % des jours du test sont prévus à 4 % près, mais 47,8 % en hiver, et les 90 jours d'hiver portent 61,6 % de l'erreur quadratique. *La météo* : le groupe écrit « sans prévisions météo », ChatGPT « aucun modèle n'utilise la météo », ce qui est faux. *Les réseaux* : ChatGPT juge que les modèles classiques font « au moins aussi bien », alors que la validation croisée penche pour les réseaux (section 4.1) ; le groupe ne les classe pas.
+- **Ce que ChatGPT apporte et que notre texte n'a pas.** Des chiffres, la correction des comparaisons multiples et une réserve juste : « une fourchette très large couvre facilement », et le prompt ne donnait pas les largeurs (300 GWh/jour en moyenne pour AR-GARCH, 347 pour le SARIMA).
+- **Simplifications, erreurs et causalités.** ChatGPT simplifie cinq fois, se trompe deux fois et généralise abusivement deux fois (tableau @tab:audit). Il n'avance aucune explication causale : c'est notre texte qui en contient.
 
-## 5.6 Audit des affirmations du LLM
+**Limites de notre propre interprétation.**
 
-Nous avons relevé 29 affirmations chiffrées ou causales dans les trois réponses et confronté chacune à un fichier du projet (audit complet en annexe B et dans `rapport/annexe_llm/audit_gabarit.csv`). **Résultat : 20 affirmations correctes, 9 simplifiées, aucune fausse, aucune causalité non fondée.** Sur les 170 nombres cités, 156 figurent dans le prompt ; les 14 autres sont des seuils usuels, des ordres de modèle ou des valeurs que le LLM calcule et signale comme telles (toutes recalculées et exactes).
+- **Des causes non testées.** « (habitudes, prix, industrie) » est une hypothèse : la section 7.1 mesure une baisse de niveau d'environ 98 GWh/jour sans séparer ces causes. « Sans prévisions météo, les modèles se font surprendre par chaque vague de froid » est plausible, non testé et incomplet : sur les douze plus fortes erreurs d'AR-GARCH, sept sont des surestimations un jour de redoux (11,7 °C en moyenne), cinq des sous-estimations par temps froid (1,5 °C).
+- **Des formules plus fortes que les résultats.** « La sensibilité au froid est restée la même » : le test ne détecte pas de changement de pente (p = 0,756), ce qui ne démontre pas l'égalité. « Ses intervalles sont les plus fiables » : AR-GARCH est le seul à atteindre 95 % et tient le mieux en hiver (91,1 % contre 86,7 % pour le SARIMA), mais le SARIMA est plus proche de 95 % sur l'ensemble du test ; les deux LLM font la même erreur.
+- **Une portée surestimée.** Quand ce texte a été écrit, les plis de validation croisée ne portaient pas encore sur AR-GARCH, et il ne cite aucun chiffre.
 
-[[TAB:audit|Affirmations du LLM jugées simplifiées|Aucune affirmation n'est fausse, mais neuf sont incomplètes ; les plus lourdes de conséquences portent sur la couverture en hiver.]]
+## 5.6 Audit des affirmations des LLM
 
-| Réponse | Affirmation du LLM | Fichier de vérification | Correction |
+Nous avons relevé 52 affirmations chiffrées ou causales, 32 dans les trois réponses de Claude (dont 10 pour le prompt b) et 20 dans celle de ChatGPT, et confronté chacune à un fichier du projet (audit complet en annexe B).
+
+[[TAB:audit_bilan|Bilan de l'audit par outil|Les deux outils commettent les deux mêmes erreurs ; ChatGPT ajoute deux généralisations abusives.]]
+
+| LLM | Affirmations | Correctes | Simplifiées | Fausses | Généralisations abusives | Causalités non fondées |
+|---|---|---|---|---|---|---|
+| Claude, prompts (a), (b) et (c) | 32 | 20 | 10 | 2 | 0 | 0 |
+| ChatGPT, prompt (b) | 20 | 11 | 5 | 2 | 2 | 0 |
+
+Sur les nombres cités, 156 des 170 de Claude et 25 des 28 de ChatGPT figurent dans le prompt ; les autres sont des seuils, des ordres de modèle, des arrondis ou des calculs exacts. **Deux erreurs de Claude avaient échappé au premier audit**, qui portait sur 29 affirmations et n'en jugeait aucune fausse : elles sont apparues en appliquant à ses réponses les contrôles faits pour ChatGPT.
+
+[[TAB:audit|Affirmations fausses, généralisées ou simplifiées les plus importantes|Aucune de ces erreurs ne porte sur un chiffre inventé.]]
+
+| LLM (prompt) | Affirmation | Verdict | Correction |
 |---|---|---|---|
-| a | La baisse de variance après Δ7 signale une structure hebdomadaire forte | `02_eda.ipynb` | Force saisonnière hebdomadaire de 0,45 contre 0,90 pour le cycle annuel |
-| a | Trois candidats SARIMA proposés | `exports/comparaison_validation_complete.csv` | Le modèle retenu, SARIMA(2,1,1)(0,1,1)[7], n'est pas proposé |
-| a | L'asymétrie suggère une variable externe explicative | `02_eda.ipynb` | Le lien avec la température (−0,83) vient de l'analyse exploratoire, pas de l'asymétrie |
-| b | AR-GARCH n'est distingué d'aucun concurrent direct | `exports/lstm_gru/diebold_mariano_toutes_paires.csv` | En perte absolue, le VECM est à la limite du seuil (0,053) |
-| b | Les modèles à mémoire battent nettement la persistance | `exports/audit_llm_verifications.csv` | Vrai pour six modèles sur huit ; pas pour le VECM (0,230) ni Prophet (1,000) |
-| b | AR-GARCH atteint la couverture annoncée (95,9 %) | `exports/audit_llm_verifications.csv` | 91,11 % en hiver contre 97,33 % le reste de l'année |
-| b | Tous les temps de calcul sont faibles | `exports/complexite_modeles.csv` | Temps à multiplier par 5 pour les réseaux et par 56 pour Prophet |
-| c | AR-GARCH est le seul modèle avec intervalle | `exports/previsions_7j.csv` | Vrai dans le prompt ; quatre autres modèles en fournissent (annexe A) |
-| c | Marge sur la borne haute, un jour sur vingt en dehors | `exports/audit_llm_verifications.csv` | Environ un jour sur onze en dehors en hiver |
+| ChatGPT (b), Claude (b) | Couverture d'AR-GARCH « la plus proche » de 95 %, intervalles « les mieux calibrés » | fausse | SARIMA : 94,36 %, à 0,64 point de 95 % ; AR-GARCH : 95,90 %, à 0,90 point |
+| ChatGPT (b), Claude (c) | « Aucun modèle n'utilise la météo » | fausse | Le prompt disait « aucune prévision météo » ; le VAR et le VECM utilisent la température observée |
+| ChatGPT (b) | Les modèles classiques font « au moins aussi bien » que les réseaux | généralisation abusive | Vrai pour AR-GARCH seul : VAR, SARIMA et VECM (78,96 à 87,56) sont derrière le LSTM (75,07) et le GRU (76,40) |
+| ChatGPT (b) | Ils « battent nettement » les règles naïves et Prophet | généralisation abusive | 4 comparaisons sur 12 significatives après Holm en perte quadratique, aucune contre le naïf saisonnier |
+| ChatGPT (b), Claude (b) | Temps de calcul faibles (« moins de 16 secondes ») | simplifiée | Vrai par ajustement ; 38,7 s (LSTM), 75,9 s (GRU) et 99,6 s (Prophet) pour le protocole |
+| ChatGPT (b) | RMSE d'environ 5,9 % de la consommation moyenne ; « un jour ordinaire, l'écart typique est de 49 GWh » | simplifiée | 6,15 % de la moyenne du test (le prompt imposait celle de l'apprentissage) ; 49 GWh est la MAE, l'erreur médiane est de 29,88 GWh/jour |
 
-**Lecture critique de ce résultat.** L'absence d'erreur chiffrée ne prouve pas la fiabilité du LLM en général : tous les chiffres étaient fournis dans le prompt, avec la consigne de n'en citer aucun autre. Les faiblesses observées sont d'une autre nature : le LLM généralise une moyenne (couverture, coût), ne peut pas voir ce qui n'est pas dans le prompt (saisonnalité annuelle, dégradation hivernale) et reste général quand la décision demande un seuil.
+**Lecture critique.** Aucun chiffre n'est inventé : les erreurs viennent de la lecture des chiffres du prompt (comparer deux écarts à 95 %, reprendre « prévision météo » en « météo », étendre à une famille de modèles un résultat donné pour un seul). Les deux bilans ne se comparent pas terme à terme : trois prompts contre un, une seule réponse par outil, un découpage plus fin pour ChatGPT.
 
-## 5.7 Apport et limites du LLM
+## 5.7 Apport et limites des LLM
 
-**Ce qu'il a apporté.** Un cadrage rapide et structuré : en une réponse, la liste des familles de modèles à tester, avec pour chacune le diagnostic à faire, recoupe la démarche du projet. Une vulgarisation claire de notions difficiles à transmettre (erreur quadratique, intervalle à 95 %, différence non significative). Des limites formulées spontanément et justes (un seul test, accord entre modèles qui n'est pas une mesure de fiabilité). Nous n'avons pas mesuré le temps gagné.
+**Ce qu'ils ont apporté.** Un cadrage rapide (familles de modèles à tester et diagnostics à faire, qui recoupent la démarche du projet), une vulgarisation claire de notions difficiles (erreur quadratique, intervalle à 95 %, différence non significative) et des limites justes, formulées spontanément. Nous n'avons pas mesuré le temps gagné.
 
-**Ce qu'il n'a pas su faire.** Trouver le modèle retenu, qui exigeait l'ACF, la PACF et une validation. Voir ce que les statistiques transmises ne contenaient pas : la saisonnalité annuelle dominante, les ruptures de 2020 et 2022, la dégradation des intervalles en hiver. Chiffrer une marge de sécurité. Vérifier ses propres affirmations : tout le contrôle repose sur les fichiers du projet. Il ne remplace donc ni les calculs, ni les diagnostics, ni la relecture critique de chaque chiffre.
+**Ce qu'ils n'ont pas su faire.** Trouver le modèle retenu, qui exigeait l'ACF, la PACF et une validation. Voir ce que les chiffres transmis ne contenaient pas : saisonnalité annuelle dominante, ruptures de 2020 et 2022, dégradation des intervalles en hiver. Chiffrer une marge de sécurité. Vérifier leurs propres affirmations.
+
+**Ce que montre la comparaison des deux outils.** Sur le même prompt, ChatGPT respecte mieux la longueur demandée (environ 470 mots contre 580) et formule une réserve que Claude n'a pas, mais il généralise davantage. Les deux commettent la même erreur sur la couverture : l'accord de deux LLM ne vaut pas vérification. Le second outil a surtout servi de révélateur : c'est en auditant ChatGPT que nous avons retrouvé deux erreurs de Claude, manquées par un audit mené avec Claude lui-même. Écrire notre interprétation avant de lire ChatGPT nous a montré ce qu'il ne pouvait pas voir (l'hiver), et sa réponse chiffrée a fait ressortir nos affirmations non testées. Aucun des deux ne remplace les calculs, les diagnostics ni la relecture critique de chaque chiffre.

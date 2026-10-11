@@ -75,7 +75,7 @@ assert context['identifiant'] == meta['modele']
 np.testing.assert_allclose(context['test']['scores'][0]['RMSE'], scores.loc[meta['modele'],'RMSE'])
 manifest = json.loads(Path('rapport/annexe_llm/manifest.json').read_text())
 for name, checksum in manifest['empreintes_sha256'].items():
-    if name == 'README.md':  # README de l'annexe réécrit ; prompts et réponses du premier tour restent vérifiés
+    if name == 'README.md':  # README de l'annexe réécrit ; prompts et réponses de l'essai préliminaire restent vérifiés
         continue
     assert hashlib.sha256((Path('rapport/annexe_llm')/name).read_bytes()).hexdigest() == checksum
 checks.append('Contexte et empreintes des prompts/réponses LLM vérifiés.')

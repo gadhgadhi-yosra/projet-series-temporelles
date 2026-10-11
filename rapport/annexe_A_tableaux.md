@@ -227,3 +227,20 @@
 | VAR contre SARIMA | VAR(3) | SARIMA | 78,96 | 82,38 | 1,000 | 1,000 |
 | Meilleur modèle contre son premier concurrent | AR-GARCH(1,2)-t | LSTM | 74,45 | 75,07 | 1,000 | 1,000 |
 
+## A.12 Validation croisée temporelle d'AR-GARCH et du témoin AR
+
+[[TAB:annexe_cv_garch|Validation croisée temporelle : RMSE par pli (GWh/jour), six modèles sur les cinq mêmes plis|AR-GARCH fait jeu égal avec le GRU en RMSE moyenne (96,74 contre 96,54) et devance le LSTM et le SARIMA, sans être le meilleur dans aucun pli ; sa couverture moyenne n'est que de 91,1 %.]]
+
+| Modèle | Pli 1 (hiver 2021-22) | Pli 2 (hiver 2022-23) | Pli 3 (été 2023) | Pli 4 (hiver 2024-25) | Pli 5 (été 2025) | Moyenne | Moyenne des plis d'hiver | MAE moyenne | Couverture à 95 % : moyenne (minimum) |
+|---|---|---|---|---|---|---|---|---|---|
+| GRU | 124,44 | 183,12 | 27,42 | 108,83 | 38,87 | 96,54 | 138,80 | 73,67 | — |
+| AR-GARCH(1,2)-t | 118,14 | 195,14 | 33,78 | 96,66 | 39,95 | 96,74 | 136,65 | 77,50 | 91,1 % (67,9 %) |
+| Témoin AR à variance constante | 117,50 | 197,36 | 36,59 | 92,88 | 41,15 | 97,10 | 135,91 | 77,26 | 83,9 % (55,4 %) |
+| LSTM | 130,09 | 190,43 | 34,33 | 103,87 | 39,37 | 99,62 | 141,46 | 76,50 | — |
+| SARIMA | 145,91 | 203,72 | 31,89 | 115,27 | 42,67 | 107,89 | 154,97 | 81,70 | — |
+| Naïf saisonnier | 204,24 | 221,90 | 40,02 | 164,84 | 55,22 | 137,24 | 196,99 | 108,47 | — |
+
+**Protocole.** Mêmes cinq plis de 56 jours et mêmes blocs de 7 jours qu'en section 4.1 (`scripts/cv_ar_garch.py`, `exports/cv_ar_garch.csv`). La régression de calendrier et le modèle sont ré-estimés dans chaque pli, sur sa seule période d'apprentissage ; la spécification (retards 1, 2, 7, 8 et 14, GARCH(1,2), loi de Student) reste celle choisie sur tout l'apprentissage, comme pour le SARIMA et les réseaux. Le script reproduit d'abord les prévisions du test externe du notebook 05 (écart maximal inférieur à 0,001 GWh/jour), ce qui garantit que le protocole est le même.
+
+**Lecture.** En RMSE moyenne, AR-GARCH (96,74 GWh/jour) est au niveau du GRU (96,54) et devant le LSTM (99,62) et le SARIMA (107,89) ; en MAE, il est derrière les deux réseaux (77,50 contre 73,67 et 76,50). Il n'a la plus petite RMSE dans aucun pli : le GRU l'a dans 3 plis et le témoin AR dans 2. Le témoin fait aussi bien en moyenne (97,10) : comme sur le test, le GARCH n'améliore pas la prévision ponctuelle. Il améliore les intervalles (couverture moyenne de 91,1 % contre 83,9 %), mais ceux-ci restent trop étroits en hiver (86,9 % sur les trois plis d'hiver, 67,9 % pendant l'hiver 2022-23), loin des 95,9 % du test. Avec cinq plis, aucun de ces écarts n'est testé statistiquement.
+
